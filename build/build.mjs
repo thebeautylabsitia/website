@@ -180,7 +180,7 @@ function header(depth, active = "") {
             ${svcLinks}
           </ul>
         </li>
-        <li><a href="${r("prosfores.html")}"${on("offers")}>Προσφορές</a></li>
+        ${OFFERS.length ? `<li><a href="${r("prosfores.html")}"${on("offers")}>Προσφορές</a></li>` : ""}
         <li><a href="${r("blog/index.html")}"${on("blog")}>Blog</a></li>
         <li><a href="${r("epikoinonia.html")}"${on("contact")}>Επικοινωνία</a></li>
         <li><a href="${r("ratevou.html")}" class="btn btn-nav"${on("booking")}>Ραντεβού Online</a></li>
@@ -256,7 +256,7 @@ function footer(depth) {
           <a href="${r("index.html")}">Αρχική</a>
           <a href="${r("i-elena.html")}">Η Έλενα</a>
           <a href="${r("ypiresies/index.html")}">Όλες οι Υπηρεσίες</a>
-          <a href="${r("prosfores.html")}">Προσφορές</a>
+          ${OFFERS.length ? `<a href="${r("prosfores.html")}">Προσφορές</a>` : ""}
           <a href="${r("ratevou.html")}">Ραντεβού Online</a>
           <a href="${r("blog/index.html")}">Blog</a>
           <a href="${r("epikoinonia.html")}">Επικοινωνία</a>
@@ -1583,7 +1583,7 @@ function buildSitemap() {
     ...POSTS.map((p) => ({ loc: "blog/" + p.slug + ".html", pr: "0.6", cf: "monthly", lm: p.date })),
     { loc: "epikoinonia.html", pr: "0.8", cf: "yearly" },
     { loc: "ratevou.html", pr: "0.9", cf: "monthly" },
-    { loc: "prosfores.html", pr: "0.9", cf: "weekly" },
+    ...(OFFERS.length ? [{ loc: "prosfores.html", pr: "0.9", cf: "weekly" }] : []),
   ];
   const today = new Date().toISOString().slice(0, 10);
   const body = urls
@@ -1610,7 +1610,7 @@ write("index.html", pageHome());
 write("i-elena.html", pageAbout());
 write("epikoinonia.html", pageContact());
 write("ratevou.html", pageBooking());
-write("prosfores.html", pageOffers());
+if (OFFERS.length) write("prosfores.html", pageOffers());
 write("ypiresies/index.html", pageServicesHub());
 SERVICES.forEach((s, i) => write("ypiresies/" + s.slug + ".html", pageService(s, i)));
 AREAS.forEach((a) => write("perioches/" + a.slug + ".html", pageArea(a)));
