@@ -5,7 +5,7 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BASE, BIZ, SERVICES, AREAS, POSTS } from "./data.mjs";
+import { BASE, BIZ, SERVICES, AREAS, POSTS, MACHINES, BOOKING } from "./data.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const out = (p, html) => {
@@ -182,7 +182,7 @@ function header(depth, active = "") {
         </li>
         <li><a href="${r("blog/index.html")}"${on("blog")}>Blog</a></li>
         <li><a href="${r("epikoinonia.html")}"${on("contact")}>Επικοινωνία</a></li>
-        <li><a href="${r("epikoinonia.html")}" class="btn btn-nav">Ραντεβού</a></li>
+        <li><a href="${r("ratevou.html")}" class="btn btn-nav"${on("booking")}>Ραντεβού Online</a></li>
       </ul>
     </nav>
   </header>`;
@@ -210,11 +210,11 @@ function ctaBand(depth) {
       <div>
         <p class="eyebrow">Κλείστε το ραντεβού σας</p>
         <h2 class="cta-title">Love your own <em>beauty.</em></h2>
-        <p class="cta-sub">Λειτουργούμε κατόπιν ραντεβού — επικοινωνήστε μαζί μας σήμερα.</p>
+        <p class="cta-sub">Λειτουργούμε κατόπιν ραντεβού — κλείστε online σε ένα λεπτό ή καλέστε μας.</p>
       </div>
       <div class="cta-actions">
-        <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
-        <a href="${r("epikoinonia.html")}" class="btn btn-ghost">Στοιχεία Επικοινωνίας</a>
+        <a href="${r("ratevou.html")}" class="btn btn-primary">Ραντεβού Online</a>
+        <a href="tel:${BIZ.phoneIntl}" class="btn btn-ghost">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
       </div>
     </div>
   </section>`;
@@ -284,6 +284,31 @@ function footer(depth) {
 </html>`;
 }
 
+// ---- machines -------------------------------------------------------
+function machinesSection() {
+  const cards = MACHINES.map(
+    (m) => `
+          <article class="mach reveal">
+            <p class="mach-tag">${esc(m.tag)}</p>
+            <h3 class="mach-name">${esc(m.name)}</h3>
+            <p class="mach-text">${esc(m.text)}</p>
+          </article>`
+  ).join("");
+  return `
+    <section class="machines" id="machines">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Ο εξοπλισμός μας</p>
+          <h2 class="section-title">Τα μηχανήματα —<br />και <em>γιατί</em> το καθένα</h2>
+          <p class="section-lead">Δεν αγοράσαμε μηχανήματα για να τα έχουμε. Κάθε ένα καλύπτει μια συγκεκριμένη ανάγκη που τα υπόλοιπα δεν καλύπτουν σωστά — γι' αυτό, πριν από κάθε θεραπεία, γίνεται αξιολόγηση και επιλέγεται το κατάλληλο.</p>
+        </div>
+        <div class="machines-grid">${cards}
+        </div>
+        <p class="machines-note reveal">Το μηχάνημα από μόνο του δεν κάνει το αποτέλεσμα. Το κάνει η σωστή επιλογή, η σωστή ένταση για το δικό σας δέρμα και η συνέπεια στις συνεδρίες — και αυτά είναι δουλειά του ανθρώπου που το χειρίζεται.</p>
+      </div>
+    </section>`;
+}
+
 // ====================================================================
 //  PAGE: HOME
 // ====================================================================
@@ -336,7 +361,7 @@ function pageHome() {
         </ul>
         <p class="hero-lead reveal">Αισθητικός κοσμητολόγος και <em>διαιτολόγος</em> στον ίδιο χώρο — γιατί η ομορφιά χτίζεται και <em>απ' έξω και από μέσα</em>.</p>
         <div class="hero-actions reveal">
-          <a href="${r("epikoinonia.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a>
+          <a href="${r("ratevou.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a>
           <a href="${r("ypiresies/index.html")}" class="btn btn-ghost">Οι Υπηρεσίες μας</a>
         </div>
         <a class="hero-scroll" href="#about" aria-label="Μετάβαση στην επόμενη ενότητα"><span class="hero-mouse" aria-hidden="true"></span>${ICONS.arrowDown}</a>
@@ -384,12 +409,14 @@ function pageHome() {
         </div>
       </div>
     </section>
-
+` +
+    machinesSection() +
+    `
     <section class="philosophy" id="philosophy">
       <div class="container philosophy-inner reveal">
         <p class="eyebrow">Η Φιλοσοφία μας</p>
         <span class="philosophy-mark" aria-hidden="true">&ldquo;</span>
-        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως και ό,τι σκέφτεσαι — οι σκέψεις είναι τα συστατικά της ψυχής μας.</blockquote>
+        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως — η ομορφιά χτίζεται και από μέσα.</blockquote>
         <cite class="philosophy-cite">Έλενα Σπυριδάκη · Αισθητικός Κοσμητολόγος &amp; Διαιτολόγος</cite>
       </div>
     </section>
@@ -476,7 +503,7 @@ function pageAbout() {
       <div class="container philosophy-inner reveal">
         <p class="eyebrow">Η Φιλοσοφία μας</p>
         <span class="philosophy-mark" aria-hidden="true">&ldquo;</span>
-        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως και ό,τι σκέφτεσαι — οι σκέψεις είναι τα συστατικά της ψυχής μας.</blockquote>
+        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως — η ομορφιά χτίζεται και από μέσα.</blockquote>
         <cite class="philosophy-cite">Έλενα Σπυριδάκη · Beauty Lab, Σητεία</cite>
       </div>
     </section>
@@ -543,6 +570,9 @@ function pageServicesHub() {
         </div>
       </div>
     </section>
+` +
+    machinesSection() +
+    `
   </main>` +
     ctaBand(depth) +
     footer(depth);
@@ -593,7 +623,7 @@ function pageService(s, idx) {
         <p class="eyebrow reveal">Υπηρεσία ${String(idx + 1).padStart(2, "0")}</p>
         <h1 class="page-title reveal">${esc(s.h1)}</h1>
         <p class="page-lead reveal">${esc(s.lead)}</p>
-        <div class="hero-actions reveal"><a href="${r("epikoinonia.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a></div>
+        <div class="hero-actions reveal"><a href="${r("ratevou.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a></div>
       </div>
     </section>
 
@@ -621,8 +651,8 @@ function pageService(s, idx) {
           <div class="aside-card reveal">
             <h3>Κλείστε ραντεβού</h3>
             <p>Λειτουργούμε κατόπιν ραντεβού. Η διάρκεια κυμαίνεται από 15 λεπτά έως 2 ώρες 15 λεπτά, ανάλογα με τη θεραπεία.</p>
-            <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary btn-block">${esc(BIZ.phoneDisplay)}</a>
-            <a href="mailto:${BIZ.email}" class="btn btn-ghost btn-block">Email</a>
+            <a href="${r("ratevou.html")}" class="btn btn-primary btn-block">Ραντεβού Online</a>
+            <a href="tel:${BIZ.phoneIntl}" class="btn btn-ghost btn-block">${esc(BIZ.phoneDisplay)}</a>
             <p class="aside-meta">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />Τ.Κ. ${esc(BIZ.postal)}</p>
           </div>
           <div class="aside-card reveal">
@@ -681,8 +711,8 @@ function pageArea(a) {
         <h1 class="page-title reveal">${esc(a.h1)}</h1>
         <p class="page-lead reveal">${esc(a.blurb)}</p>
         <div class="hero-actions reveal">
-          <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
-          <a href="${r("epikoinonia.html")}" class="btn btn-ghost">Επικοινωνία &amp; Χάρτης</a>
+          <a href="${r("ratevou.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a>
+          <a href="tel:${BIZ.phoneIntl}" class="btn btn-ghost">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
         </div>
       </div>
     </section>
@@ -872,6 +902,7 @@ function pagePost(p) {
 // ====================================================================
 function pageContact() {
   const depth = 0;
+  const r = (p) => rel(depth, p);
   const trail = [
     { name: "Αρχική", rel: "index.html", path: "index.html" },
     { name: "Επικοινωνία", rel: "epikoinonia.html", path: "epikoinonia.html" },
@@ -894,7 +925,7 @@ function pageContact() {
         <div class="contact-copy">
           <p class="eyebrow reveal">Επικοινωνία</p>
           <h1 class="section-title reveal">Κλείστε το ραντεβού σας</h1>
-          <p class="contact-note reveal">Το ινστιτούτο λειτουργεί <strong>κατόπιν ραντεβού</strong>. Η διάρκεια κυμαίνεται από 15 λεπτά έως 2 ώρες 15 λεπτά, ανάλογα με τη θεραπεία — γι' αυτό προτιμούμε να το κανονίσουμε μαζί από το τηλέφωνο.</p>
+          <p class="contact-note reveal">Το ινστιτούτο λειτουργεί <strong>κατόπιν ραντεβού</strong>. Μπορείτε να κλείσετε <a href="${r("ratevou.html")}"><strong>online σε ένα λεπτό</strong></a> — ή να μας πάρετε τηλέφωνο, ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε.</p>
           <ul class="contact-list">
             <li class="reveal"><span class="contact-label">Ωράριο</span><span class="contact-value">Δευτέρα &amp; Τετάρτη: 16:00 – 21:30<br />Τρίτη, Πέμπτη &amp; Παρασκευή: 09:15 – 17:30<br /><em>κατόπιν ραντεβού</em></span></li>
             <li class="reveal"><span class="contact-label">Διεύθυνση</span><span class="contact-value">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />${esc(BIZ.region)}, Τ.Κ. ${esc(BIZ.postal)}</span></li>
@@ -903,8 +934,8 @@ function pageContact() {
             <li class="reveal"><span class="contact-label">Social</span><span class="contact-value"><a href="${BIZ.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a> · <a href="${BIZ.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a><br /><em>${esc(BIZ.social)}</em></span></li>
           </ul>
           <div class="contact-actions reveal">
-            <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary">Καλέστε μας</a>
-            <a href="mailto:${BIZ.email}" class="btn btn-ghost">Στείλτε Email</a>
+            <a href="${r("ratevou.html")}" class="btn btn-primary">Ραντεβού Online</a>
+            <a href="tel:${BIZ.phoneIntl}" class="btn btn-ghost">Καλέστε μας</a>
           </div>
         </div>
         <div class="contact-map reveal">
@@ -913,6 +944,499 @@ function pageContact() {
       </div>
     </section>
   </main>` +
+    footer(depth);
+}
+
+// ====================================================================
+//  PAGE: ONLINE ΡΑΝΤΕΒΟΥ
+// ====================================================================
+function pageBooking() {
+  const depth = 0;
+  const r = (p) => rel(depth, p);
+  const trail = [
+    { name: "Αρχική", rel: "index.html", path: "index.html" },
+    { name: "Ραντεβού Online", rel: "ratevou.html", path: "ratevou.html" },
+  ];
+  const ld = [
+    breadcrumbLD(depth, trail),
+    {
+      "@context": "https://schema.org",
+      "@type": "ReserveAction",
+      name: "Κλείστε ραντεβού online στο Beauty Lab",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: abs("ratevou.html"),
+        actionPlatform: [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform",
+        ],
+      },
+      provider: { "@id": `${BASE}/#studio` },
+    },
+  ];
+
+  return head({
+    depth,
+    title: "Ραντεβού Online — Beauty Lab by Elena Spyridaki, Σητεία",
+    desc: "Κλείστε online το ραντεβού σας στο Beauty Lab στη Σητεία. Επιλέξτε θεραπεία, ημέρα και ώρα — βλέπετε αμέσως τις πραγματικά διαθέσιμες ώρες.",
+    canonical: "ratevou.html",
+    keywords: "ραντεβού online αισθητικός Σητεία, κλείσιμο ραντεβού Beauty Lab, ραντεβού laser Σητεία, ινστιτούτο αισθητικής Σητεία",
+    ld,
+  }) +
+    header(depth, "booking") +
+    crumbs(depth, trail) +
+    `
+  <main id="main">
+    <section class="page-hero page-hero--tight">
+      <div class="container">
+        <p class="eyebrow reveal">Ραντεβού Online</p>
+        <h1 class="page-title reveal">Κλείστε το ραντεβού σας</h1>
+        <p class="page-lead reveal">Διαλέξτε θεραπεία, ημέρα και ώρα. Οι ώρες που βλέπετε είναι οι πραγματικά ελεύθερες — ενημερώνονται απευθείας από το ημερολόγιο του ινστιτούτου.</p>
+      </div>
+    </section>
+
+    <section class="booking">
+      <div class="container booking-grid">
+        <div class="bk" id="bk" data-availability="${attr(BOOKING.availabilityUrl)}" data-booking="${attr(BOOKING.bookingUrl)}">
+          <ol class="bk-steps" id="bkSteps" aria-label="Βήματα κράτησης">
+            <li data-step="1"><span>1</span> Θεραπεία</li>
+            <li data-step="2"><span>2</span> Ημέρα &amp; ώρα</li>
+            <li data-step="3"><span>3</span> Στοιχεία</li>
+          </ol>
+
+          <div class="bk-stage" id="bkStage" aria-live="polite">
+            <p class="bk-loading">Φόρτωση θεραπειών…</p>
+          </div>
+        </div>
+
+        <aside class="bk-aside">
+          <div class="bk-card reveal">
+            <h2>Προτιμάτε τηλέφωνο;</h2>
+            <p>Ευχαρίστως — ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε ή θέλετε να συνδυάσετε περισσότερες από μία.</p>
+            <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary">${esc(BIZ.phoneDisplay)}</a>
+          </div>
+          <div class="bk-card reveal">
+            <h2>Ωράριο</h2>
+            <p class="bk-hours">Δευτέρα &amp; Τετάρτη<br /><strong>16:00 – 21:30</strong></p>
+            <p class="bk-hours">Τρίτη, Πέμπτη &amp; Παρασκευή<br /><strong>09:15 – 17:30</strong></p>
+            <p class="bk-fine">Σάββατο &amp; Κυριακή κλειστά.</p>
+          </div>
+          <div class="bk-card reveal">
+            <h2>Καλό είναι να ξέρετε</h2>
+            <ul class="bk-list">
+              <li>Τα online ραντεβού κλείνονται τουλάχιστον <strong>3 ώρες</strong> νωρίτερα.</li>
+              <li>Για <strong>laser σε πόδια ή μπικίνι</strong>, αν δεν έχετε ξυριστεί, η θεραπεία θέλει 15 λεπτά παραπάνω — θα σας ρωτήσουμε.</li>
+              <li>Για αλλαγή ή ακύρωση, τηλεφωνήστε μας.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    var root = document.getElementById('bk');
+    var stage = document.getElementById('bkStage');
+    var stepsEl = document.getElementById('bkSteps');
+    if (!root || !stage) return;
+
+    var AVAIL_URL = root.getAttribute('data-availability');
+    var BOOK_URL = root.getAttribute('data-booking');
+    var PHONE = '${BIZ.phoneDisplay}';
+
+    var MONTHS = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος','Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+    var DOW = ['Δε','Τρ','Τε','Πε','Πα','Σα','Κυ'];
+
+    var state = {
+      catalog: null, service: null, prep: true,
+      year: 0, month: 0, days: null, duration: 0,
+      day: null, slot: null, step: 1, loading: false,
+      openGroup: -1
+    };
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function ymd(y, m, d) { return y + '-' + pad(m) + '-' + pad(d); }
+    // Δευτέρα = 0, ώστε η εβδομάδα να ξεκινά σωστά για Ελλάδα.
+    function dowMon(y, m, d) { return (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7; }
+    function daysInMonth(y, m) { return new Date(Date.UTC(y, m, 0)).getUTCDate(); }
+
+    function setStep(n) {
+      state.step = n;
+      var items = stepsEl.querySelectorAll('li');
+      for (var i = 0; i < items.length; i++) {
+        var s = Number(items[i].getAttribute('data-step'));
+        items[i].className = s < n ? 'is-done' : (s === n ? 'is-active' : '');
+      }
+      stepsEl.hidden = n > 3;
+    }
+
+    function fail(msg) {
+      stage.innerHTML =
+        '<div class="bk-error"><p>' + esc(msg) + '</p>' +
+        '<p class="bk-fine">Μπορείτε πάντα να μας καλέσετε στο <a href="tel:+30${BIZ.phoneIntl.replace(/\D/g, "").slice(2)}">' + esc(PHONE) + '</a>.</p></div>';
+    }
+
+    function api(url) {
+      return fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } })
+        .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, body: j }; }); });
+    }
+
+    // ---------- Βήμα 1: θεραπεία ----------
+    function loadCatalog() {
+      stage.innerHTML = '<p class="bk-loading">Φόρτωση θεραπειών…</p>';
+      api(AVAIL_URL + '?action=services').then(function (r) {
+        if (!r.ok || !r.body || !r.body.groups) { fail('Δεν μπορέσαμε να φορτώσουμε τις θεραπείες.'); return; }
+        state.catalog = r.body;
+        renderServices();
+      }).catch(function () {
+        fail('Δεν υπάρχει σύνδεση με το σύστημα κρατήσεων αυτή τη στιγμή.');
+      });
+    }
+
+    function renderServices() {
+      setStep(1);
+      var g = state.catalog.groups;
+      var h = '<h2 class="bk-title">Ποια θεραπεία θα θέλατε;</h2>' +
+              '<p class="bk-sub">Διαλέξτε κατηγορία και μετά τη θεραπεία.</p>' +
+              '<div class="bk-acc">';
+      for (var i = 0; i < g.length; i++) {
+        var open = state.openGroup === i;
+        h += '<div class="bk-accgroup' + (open ? ' is-open' : '') + '">' +
+             '<button type="button" class="bk-bar" data-g="' + i + '"' +
+             ' aria-expanded="' + (open ? 'true' : 'false') + '">' +
+             '<span class="bk-bar-name">' + esc(g[i].name) + '</span>' +
+             '<span class="bk-bar-count">' + g[i].services.length + '</span>' +
+             '<span class="bk-caret" aria-hidden="true"></span>' +
+             '</button><div class="bk-panel"' + (open ? '' : ' hidden') + '>';
+        for (var j = 0; j < g[i].services.length; j++) {
+          var s = g[i].services[j];
+          h += '<button type="button" class="bk-item" data-code="' + esc(s.code) + '">' +
+               '<span class="bk-item-name">' + esc(s.name) + '</span>' +
+               '<span class="bk-item-min">' + s.minutes + " λεπτά</span>" +
+               '<span class="bk-item-go" aria-hidden="true">→</span></button>';
+        }
+        h += '</div></div>';
+      }
+      h += '</div>';
+      stage.innerHTML = h;
+
+      var bars = stage.querySelectorAll('.bk-bar');
+      for (var b = 0; b < bars.length; b++) {
+        bars[b].addEventListener('click', function () {
+          var idx = Number(this.getAttribute('data-g'));
+          state.openGroup = state.openGroup === idx ? -1 : idx;
+          renderServices();
+          if (state.openGroup === idx) {
+            var el = stage.querySelectorAll('.bk-bar')[idx];
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+      var items = stage.querySelectorAll('.bk-item');
+      for (var k = 0; k < items.length; k++) {
+        items[k].addEventListener('click', function () {
+          pickService(this.getAttribute('data-code'));
+        });
+      }
+    }
+
+    function findService(code) {
+      var g = state.catalog.groups;
+      for (var i = 0; i < g.length; i++) {
+        for (var j = 0; j < g[i].services.length; j++) {
+          if (g[i].services[j].code === code) {
+            var s = g[i].services[j];
+            return { code: s.code, name: s.name, minutes: s.minutes,
+                     prepExtra: s.prepExtra, group: g[i].name };
+          }
+        }
+      }
+      return null;
+    }
+
+    function pickService(code) {
+      state.service = findService(code);
+      state.prep = true;
+      state.day = null;
+      state.slot = null;
+      if (!state.service) return;
+      if (state.service.prepExtra > 0) { renderPrep(); }
+      else { openCalendar(); }
+    }
+
+    // ---------- Βήμα 1β: προετοιμασία ----------
+    function renderPrep() {
+      var s = state.service;
+      stage.innerHTML =
+        '<button type="button" class="bk-back" id="bkBack">← Άλλη θεραπεία</button>' +
+        '<h2 class="bk-title">' + esc(s.name) + '</h2>' +
+        '<p class="bk-sub">Έχετε ξυρίσει την περιοχή πριν έρθετε;</p>' +
+        '<div class="bk-choice">' +
+        '<button type="button" class="bk-opt" data-prep="1"><strong>Ναι</strong>' +
+        '<span>' + s.minutes + " λεπτά</span></button>" +
+        '<button type="button" class="bk-opt" data-prep="0"><strong>Όχι ακόμη</strong>' +
+        '<span>' + (s.minutes + s.prepExtra) + " λεπτά</span></button>" +
+        '</div>' +
+        '<p class="bk-fine">Το ξύρισμα γίνεται στο ινστιτούτο αν χρειαστεί — απλώς θέλει λίγο παραπάνω χρόνο, γι\\'  αυτό το κρατάμε στο ραντεβού.</p>';
+
+      stage.querySelector('#bkBack').addEventListener('click', renderServices);
+      var opts = stage.querySelectorAll('.bk-opt');
+      for (var i = 0; i < opts.length; i++) {
+        opts[i].addEventListener('click', function () {
+          state.prep = this.getAttribute('data-prep') === '1';
+          openCalendar();
+        });
+      }
+    }
+
+    // ---------- Βήμα 2: ημερολόγιο ----------
+    function openCalendar() {
+      var now = new Date();
+      state.year = now.getFullYear();
+      state.month = now.getMonth() + 1;
+      loadMonth();
+    }
+
+    function loadMonth() {
+      setStep(2);
+      state.loading = true;
+      renderCalendar();
+      var last = daysInMonth(state.year, state.month);
+      var url = AVAIL_URL + '?action=availability' +
+        '&service=' + encodeURIComponent(state.service.code) +
+        '&prep=' + (state.prep ? '1' : '0') +
+        '&from=' + ymd(state.year, state.month, 1) +
+        '&to=' + ymd(state.year, state.month, last);
+      api(url).then(function (r) {
+        state.loading = false;
+        if (!r.ok || !r.body || r.body.ok === false) {
+          fail((r.body && r.body.message) || 'Δεν μπορέσαμε να δούμε τις διαθέσιμες ώρες.');
+          return;
+        }
+        state.duration = r.body.durationMinutes;
+        var map = {};
+        for (var i = 0; i < r.body.days.length; i++) { map[r.body.days[i].date] = r.body.days[i]; }
+        state.days = map;
+        renderCalendar();
+      }).catch(function () {
+        state.loading = false;
+        fail('Δεν υπάρχει σύνδεση με το σύστημα κρατήσεων αυτή τη στιγμή.');
+      });
+    }
+
+    function monthOffset() {
+      var now = new Date();
+      return (state.year - now.getFullYear()) * 12 + (state.month - (now.getMonth() + 1));
+    }
+
+    function renderCalendar() {
+      var s = state.service;
+      var mins = state.duration || (s.minutes + (state.prep ? 0 : s.prepExtra));
+      var off = monthOffset();
+
+      var h = '<button type="button" class="bk-back" id="bkBack">← Άλλη θεραπεία</button>' +
+        '<h2 class="bk-title">' + esc(s.name) + '</h2>' +
+        '<p class="bk-sub">' + esc(s.group) + ' · ' + mins + ' λεπτά' +
+        (s.prepExtra > 0 ? ' · ' + (state.prep ? 'με προετοιμασία' : 'χωρίς προετοιμασία') : '') +
+        ' <button type="button" class="bk-link" id="bkEdit">αλλαγή</button></p>' +
+        '<div class="bk-cal">' +
+        '<div class="bk-cal-head">' +
+        '<button type="button" class="bk-nav" id="bkPrev"' + (off <= 0 ? ' disabled' : '') + ' aria-label="Προηγούμενος μήνας">‹</button>' +
+        '<span class="bk-month">' + MONTHS[state.month - 1] + ' ' + state.year + '</span>' +
+        '<button type="button" class="bk-nav" id="bkNext"' + (off >= 2 ? ' disabled' : '') + ' aria-label="Επόμενος μήνας">›</button>' +
+        '</div><div class="bk-dow">';
+      for (var d = 0; d < 7; d++) { h += '<span>' + DOW[d] + '</span>'; }
+      h += '</div><div class="bk-grid">';
+
+      var lead = dowMon(state.year, state.month, 1);
+      for (var b = 0; b < lead; b++) { h += '<span class="bk-cell bk-cell--empty"></span>'; }
+
+      var last = daysInMonth(state.year, state.month);
+      for (var day = 1; day <= last; day++) {
+        var key = ymd(state.year, state.month, day);
+        var info = state.days ? state.days[key] : null;
+        var free = info && !info.closed && info.slots.length > 0;
+        var cls = 'bk-cell' + (free ? ' is-free' : ' is-off') +
+          (state.day === key ? ' is-sel' : '');
+        h += free
+          ? '<button type="button" class="' + cls + '" data-date="' + key + '">' + day +
+            '<i class="bk-dot" aria-hidden="true"></i></button>'
+          : '<span class="' + cls + '">' + day + '</span>';
+      }
+      h += '</div>';
+      if (state.loading) { h += '<p class="bk-loading">Έλεγχος διαθεσιμότητας…</p>'; }
+      h += '</div><div class="bk-slots" id="bkSlots"></div>';
+
+      stage.innerHTML = h;
+      stage.querySelector('#bkBack').addEventListener('click', renderServices);
+      stage.querySelector('#bkEdit').addEventListener('click', function () {
+        pickService(state.service.code);
+      });
+      var prev = stage.querySelector('#bkPrev');
+      var next = stage.querySelector('#bkNext');
+      if (prev) prev.addEventListener('click', function () { shiftMonth(-1); });
+      if (next) next.addEventListener('click', function () { shiftMonth(1); });
+
+      var cells = stage.querySelectorAll('.bk-cell[data-date]');
+      for (var c = 0; c < cells.length; c++) {
+        cells[c].addEventListener('click', function () {
+          state.day = this.getAttribute('data-date');
+          renderCalendar();
+          renderSlots();
+          var sl = document.getElementById('bkSlots');
+          if (sl) sl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
+      if (state.day) renderSlots();
+    }
+
+    function shiftMonth(dir) {
+      state.month += dir;
+      if (state.month > 12) { state.month = 1; state.year++; }
+      if (state.month < 1) { state.month = 12; state.year--; }
+      state.day = null;
+      state.days = null;
+      loadMonth();
+    }
+
+    function renderSlots() {
+      var el = document.getElementById('bkSlots');
+      if (!el || !state.day) return;
+      var info = state.days[state.day];
+      if (!info || !info.slots.length) { el.innerHTML = ''; return; }
+      var parts = state.day.split('-');
+      var h = '<h3 class="bk-slots-title">' + DOW[dowMon(+parts[0], +parts[1], +parts[2])] +
+        ' ' + (+parts[2]) + ' ' + MONTHS[+parts[1] - 1] + '</h3><div class="bk-times">';
+      for (var i = 0; i < info.slots.length; i++) {
+        h += '<button type="button" class="bk-time" data-i="' + i + '">' +
+             esc(info.slots[i].label) + '</button>';
+      }
+      h += '</div>';
+      el.innerHTML = h;
+      var ts = el.querySelectorAll('.bk-time');
+      for (var k = 0; k < ts.length; k++) {
+        ts[k].addEventListener('click', function () {
+          state.slot = info.slots[Number(this.getAttribute('data-i'))];
+          renderForm();
+        });
+      }
+    }
+
+    // ---------- Βήμα 3: στοιχεία ----------
+    function renderForm() {
+      setStep(3);
+      var parts = state.day.split('-');
+      var when = (+parts[2]) + ' ' + MONTHS[+parts[1] - 1] + ' ' + parts[0] + ', ' + state.slot.label;
+      stage.innerHTML =
+        '<button type="button" class="bk-back" id="bkBack">← Άλλη ώρα</button>' +
+        '<h2 class="bk-title">Τα στοιχεία σας</h2>' +
+        '<div class="bk-summary">' +
+        '<p><strong>' + esc(state.service.name) + '</strong></p>' +
+        '<p>' + esc(when) + ' · ' + state.duration + ' λεπτά</p>' +
+        '<p class="bk-fine">Με την ' + esc(state.slot.staffName) + '</p>' +
+        '</div>' +
+        '<form class="bk-form" id="bkForm" novalidate>' +
+        '<label>Ονοματεπώνυμο<input type="text" name="name" required autocomplete="name" /></label>' +
+        '<label>Κινητό τηλέφωνο<input type="tel" name="phone" required autocomplete="tel" inputmode="tel" placeholder="69…" /></label>' +
+        '<label>Email <span class="bk-opt-tag">προαιρετικό</span><input type="email" name="email" autocomplete="email" /></label>' +
+        '<label>Σημείωση <span class="bk-opt-tag">προαιρετικό</span><textarea name="notes" rows="3"></textarea></label>' +
+        '<p class="bk-err" id="bkErr" hidden></p>' +
+        '<button type="submit" class="btn btn-primary bk-submit">Επιβεβαίωση ραντεβού</button>' +
+        '<p class="bk-fine">Θα σας στείλουμε υπενθύμιση με SMS την προηγούμενη ημέρα.</p>' +
+        '</form>';
+
+      stage.querySelector('#bkBack').addEventListener('click', function () {
+        state.slot = null; renderCalendar();
+      });
+      stage.querySelector('#bkForm').addEventListener('submit', submitBooking);
+    }
+
+    function submitBooking(e) {
+      e.preventDefault();
+      var form = e.target;
+      var errEl = document.getElementById('bkErr');
+      var btn = form.querySelector('.bk-submit');
+      // Προσοχή: το form.name είναι το attribute της φόρμας, όχι το πεδίο.
+      var val = function (n) {
+        var el = form.elements[n];
+        return el ? String(el.value).trim() : '';
+      };
+      var name = val('name');
+      var phone = val('phone');
+
+      function showErr(m) {
+        errEl.textContent = m; errEl.hidden = false;
+        btn.disabled = false; btn.textContent = 'Επιβεβαίωση ραντεβού';
+      }
+      errEl.hidden = true;
+      if (name.length < 3) { showErr('Συμπληρώστε το ονοματεπώνυμό σας.'); return; }
+      if (phone.replace(/[^0-9]/g, '').length < 10) { showErr('Συμπληρώστε ένα έγκυρο τηλέφωνο.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Καταχώρηση…';
+
+      fetch(BOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'book',
+          service: state.service.code,
+          prep: state.prep,
+          start: state.slot.start,
+          staff: state.slot.staff,
+          name: name,
+          phone: phone,
+          email: val('email'),
+          notes: val('notes')
+        })
+      })
+        .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, body: j }; }); })
+        .then(function (r) {
+          if (r.ok && r.body && r.body.ok) { renderDone(r.body); return; }
+          var m = (r.body && r.body.message) || 'Κάτι πήγε στραβά. Δοκιμάστε ξανά ή καλέστε μας.';
+          showErr(m);
+          if (r.body && r.body.error === 'slot_taken') {
+            state.days = null;
+            setTimeout(function () { loadMonth(); }, 1800);
+          }
+        })
+        .catch(function () {
+          showErr('Δεν υπάρχει σύνδεση. Δοκιμάστε ξανά ή καλέστε μας στο ' + PHONE + '.');
+        });
+    }
+
+    // ---------- Βήμα 4: επιβεβαίωση ----------
+    function renderDone(res) {
+      setStep(4);
+      stage.innerHTML =
+        '<div class="bk-done">' +
+        '<span class="bk-check" aria-hidden="true">✓</span>' +
+        '<h2 class="bk-title">Το ραντεβού σας κλείστηκε</h2>' +
+        '<p class="bk-done-when">' + esc(res.startLabel) + '</p>' +
+        '<p>' + esc(res.service.name) + ' · ' + res.durationMinutes + ' λεπτά · με την ' + esc(res.staffName) + '</p>' +
+        '<p class="bk-fine">Καταπότη 36, Σητεία. Θα λάβετε υπενθύμιση με SMS την προηγούμενη ημέρα.' +
+        (res.client && res.client.email ? ' Στείλαμε και email επιβεβαίωσης.' : '') + '</p>' +
+        '<div class="bk-done-actions">' +
+        '<a href="${r("index.html")}" class="btn btn-ghost">Επιστροφή στην αρχική</a>' +
+        '<button type="button" class="btn btn-ghost" id="bkAgain">Νέο ραντεβού</button>' +
+        '</div></div>';
+      var again = document.getElementById('bkAgain');
+      if (again) again.addEventListener('click', function () {
+        state.service = null; state.day = null; state.slot = null; state.days = null;
+        renderServices();
+      });
+    }
+
+    setStep(1);
+    loadCatalog();
+  })();
+  </script>` +
     footer(depth);
 }
 
@@ -936,6 +1460,7 @@ function buildSitemap() {
     { loc: "blog/index.html", pr: "0.7", cf: "weekly" },
     ...POSTS.map((p) => ({ loc: "blog/" + p.slug + ".html", pr: "0.6", cf: "monthly", lm: p.date })),
     { loc: "epikoinonia.html", pr: "0.8", cf: "yearly" },
+    { loc: "ratevou.html", pr: "0.9", cf: "monthly" },
   ];
   const today = new Date().toISOString().slice(0, 10);
   const body = urls
@@ -961,6 +1486,7 @@ const write = (p, html) => { out(p, html); n++; };
 write("index.html", pageHome());
 write("i-elena.html", pageAbout());
 write("epikoinonia.html", pageContact());
+write("ratevou.html", pageBooking());
 write("ypiresies/index.html", pageServicesHub());
 SERVICES.forEach((s, i) => write("ypiresies/" + s.slug + ".html", pageService(s, i)));
 AREAS.forEach((a) => write("perioches/" + a.slug + ".html", pageArea(a)));
