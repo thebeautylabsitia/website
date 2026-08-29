@@ -1700,3 +1700,187 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
   .bk-cell { font-size: 0.85rem; border-radius: 10px; }
   .bk-aside { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   Προσφορές
+   ============================================================ */
+.offers {
+  padding-block: var(--section-y);
+  background:
+    radial-gradient(85% 60% at 0% 0%, var(--sand) 0%, transparent 58%),
+    var(--white);
+  border-block: 1px solid var(--line);
+}
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+  gap: 1.1rem;
+}
+
+.offer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(1.7rem, 3vw, 2.2rem);
+  overflow: hidden;
+  transition: background .4s var(--ease), transform .4s var(--ease),
+              border-color .35s var(--ease), box-shadow .4s var(--ease);
+}
+.offer::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  height: 0;
+  background: var(--rose);
+  transition: height .45s var(--ease);
+}
+.offer:hover {
+  background: var(--white);
+  transform: translateY(-4px);
+  border-color: var(--beige);
+  box-shadow: 0 26px 46px -30px rgba(90, 62, 22, 0.65);
+}
+.offer:hover::before { height: 100%; }
+
+.offer-neo {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  background: var(--rose-deep);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  padding: 0.3rem 0.6rem 0.28rem;
+  border-radius: 100px;
+  line-height: 1;
+}
+.offer-neo--inline {
+  position: static;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.6rem;
+}
+
+.offer-icon {
+  display: block;
+  font-size: 1.7rem;
+  color: var(--rose);
+  margin-bottom: 0.5rem;
+}
+.offer-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.42rem;
+  line-height: 1.2;
+  color: var(--cocoa);
+  margin: 0 0 0.6rem;
+}
+/* Κενό για την ένδειξη «ΝΕΟ» μόνο όπου υπάρχει — αλλιώς σπάνε οι τίτλοι. */
+.offer-neo ~ .offer-title { padding-right: 3.2rem; }
+.offer-lead {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  flex: 1;
+}
+.offer-price {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: var(--rose-deep);
+  margin: 0 0 0.8rem;
+}
+.offer-more {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mocha);
+  transition: color .3s var(--ease);
+}
+.offer:hover .offer-more { color: var(--rose-deep); }
+
+.offers-cta { margin-top: clamp(2rem, 4vw, 3rem); text-align: center; }
+
+/* --- Σελίδα προσφορών --- */
+.offers-page { padding-block: clamp(2rem, 4vw, 3.5rem) var(--section-y); }
+.offers-list { display: grid; gap: clamp(1.4rem, 3vw, 2.2rem); }
+
+.offer-full {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.6rem, 3.5vw, 2.6rem);
+  scroll-margin-top: 100px;
+}
+.offer-full-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding-bottom: 1.3rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--line);
+}
+.offer-full-head .offer-icon { margin: 0.1rem 0 0; font-size: 2rem; }
+.offer-full-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+  line-height: 1.15;
+  color: var(--cocoa);
+  margin: 0 0 0.4rem;
+}
+.offer-full-lead {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+.offer-full-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: clamp(1.4rem, 3vw, 2.6rem);
+  align-items: start;
+}
+.offer-full-copy p { margin: 0 0 1rem; }
+.offer-full-copy p:last-child { margin-bottom: 0; }
+.offer-full-side {
+  background: var(--sand);
+  border-radius: 14px;
+  padding: 1.3rem 1.5rem;
+}
+.offer-full-side h3 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mocha);
+  margin: 0 0 0.8rem;
+}
+.offer-full-side .ticks li { padding-left: 1.8rem; font-size: 0.94rem; }
+.offer-full-side .ticks li:last-child { border-bottom: 0; }
+.offer-full-price {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--rose-deep);
+  margin: 0.8rem 0 0;
+}
+.offer-full-ask {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0.8rem 0 0;
+}
+.offer-full-valid {
+  font-size: 0.84rem;
+  color: var(--mocha);
+  margin: 0.4rem 0 0;
+}
+.offer-full-actions { display: grid; gap: 0.5rem; margin-top: 1.2rem; }
+
+@media (max-width: 780px) {
+  .offer-full-body { grid-template-columns: 1fr; }
+}

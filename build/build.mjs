@@ -5,7 +5,7 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BASE, BIZ, SERVICES, AREAS, POSTS, MACHINES, BOOKING } from "./data.mjs";
+import { BASE, BIZ, SERVICES, AREAS, POSTS, MACHINES, BOOKING, OFFERS } from "./data.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const out = (p, html) => {
@@ -180,6 +180,7 @@ function header(depth, active = "") {
             ${svcLinks}
           </ul>
         </li>
+        <li><a href="${r("prosfores.html")}"${on("offers")}>Προσφορές</a></li>
         <li><a href="${r("blog/index.html")}"${on("blog")}>Blog</a></li>
         <li><a href="${r("epikoinonia.html")}"${on("contact")}>Επικοινωνία</a></li>
         <li><a href="${r("ratevou.html")}" class="btn btn-nav"${on("booking")}>Ραντεβού Online</a></li>
@@ -255,6 +256,8 @@ function footer(depth) {
           <a href="${r("index.html")}">Αρχική</a>
           <a href="${r("i-elena.html")}">Η Έλενα</a>
           <a href="${r("ypiresies/index.html")}">Όλες οι Υπηρεσίες</a>
+          <a href="${r("prosfores.html")}">Προσφορές</a>
+          <a href="${r("ratevou.html")}">Ραντεβού Online</a>
           <a href="${r("blog/index.html")}">Blog</a>
           <a href="${r("epikoinonia.html")}">Επικοινωνία</a>
         </nav>
@@ -282,6 +285,40 @@ function footer(depth) {
   <script src="${r("main.js")}" defer></script>
 </body>
 </html>`;
+}
+
+// ---- offers ---------------------------------------------------------
+function offerCard(depth, o) {
+  const r = (p) => rel(depth, p);
+  return `
+          <a class="offer reveal" href="${r("prosfores.html#" + o.slug)}">
+            ${o.neo ? '<span class="offer-neo">ΝΕΟ</span>' : ""}
+            <span class="offer-icon" aria-hidden="true">${o.icon}</span>
+            <h3 class="offer-title">${esc(o.title)}</h3>
+            <p class="offer-lead">${esc(o.lead)}</p>
+            ${o.price ? `<p class="offer-price">${esc(o.price)}</p>` : ""}
+            <span class="offer-more">Μάθετε περισσότερα →</span>
+          </a>`;
+}
+
+function offersSection(depth) {
+  if (!OFFERS.length) return "";
+  const r = (p) => rel(depth, p);
+  return `
+    <section class="offers" id="offers">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Οι προσφορές μας</p>
+          <h2 class="section-title">Συνδυασμοί που <em>δουλεύουν</em> μαζί</h2>
+          <p class="section-lead">Δεν είναι τυχαία πακέτα. Είναι θεραπείες που η μία στηρίζει την άλλη — γι' αυτό τις προτείνουμε μαζί.</p>
+        </div>
+        <div class="offers-grid">${OFFERS.map((o) => offerCard(depth, o)).join("")}
+        </div>
+        <div class="offers-cta reveal">
+          <a href="${r("prosfores.html")}" class="btn btn-ghost">Όλες οι προσφορές →</a>
+        </div>
+      </div>
+    </section>`;
 }
 
 // ---- machines -------------------------------------------------------
@@ -410,6 +447,7 @@ function pageHome() {
       </div>
     </section>
 ` +
+    offersSection(depth) +
     machinesSection() +
     `
     <section class="philosophy" id="philosophy">
@@ -948,6 +986,90 @@ function pageContact() {
 }
 
 // ====================================================================
+//  PAGE: ΠΡΟΣΦΟΡΕΣ
+// ====================================================================
+function pageOffers() {
+  const depth = 0;
+  const r = (p) => rel(depth, p);
+  const trail = [
+    { name: "Αρχική", rel: "index.html", path: "index.html" },
+    { name: "Προσφορές", rel: "prosfores.html", path: "prosfores.html" },
+  ];
+  const ld = [
+    breadcrumbLD(depth, trail),
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Προσφορές — Beauty Lab by Elena Spyridaki",
+      itemListElement: OFFERS.map((o, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: o.title,
+        url: abs("prosfores.html") + "#" + o.slug,
+      })),
+    },
+  ];
+
+  const blocks = OFFERS.map(
+    (o) => `
+      <article class="offer-full reveal" id="${o.slug}">
+        <div class="offer-full-head">
+          <span class="offer-icon" aria-hidden="true">${o.icon}</span>
+          <div>
+            <h2 class="offer-full-title">${esc(o.title)}${o.neo ? ' <span class="offer-neo offer-neo--inline">ΝΕΟ</span>' : ""}</h2>
+            <p class="offer-full-lead">${esc(o.lead)}</p>
+          </div>
+        </div>
+        <div class="offer-full-body">
+          <div class="offer-full-copy">
+            ${o.body.map((p) => `<p>${esc(p)}</p>`).join("\n            ")}
+          </div>
+          <div class="offer-full-side">
+            <h3>Τι περιλαμβάνει</h3>
+            <ul class="ticks">
+              ${o.includes.map((x) => `<li>${esc(x)}</li>`).join("\n              ")}
+            </ul>
+            ${o.price ? `<p class="offer-full-price">${esc(o.price)}</p>` : `<p class="offer-full-ask">Τηλεφωνήστε μας για την τιμή — εξαρτάται από τις περιοχές και τον αριθμό συνεδριών.</p>`}
+            ${o.validity ? `<p class="offer-full-valid">${esc(o.validity)}</p>` : ""}
+            <div class="offer-full-actions">
+              <a href="${r("ratevou.html")}" class="btn btn-primary btn-block">Κλείστε Ραντεβού</a>
+              <a href="tel:${BIZ.phoneIntl}" class="btn btn-ghost btn-block">${esc(BIZ.phoneDisplay)}</a>
+            </div>
+          </div>
+        </div>
+      </article>`
+  ).join("");
+
+  return head({
+    depth,
+    title: "Προσφορές & Πακέτα | Beauty Lab by Elena Spyridaki — Σητεία",
+    desc: "Οι τρέχουσες προσφορές και τα πακέτα του Beauty Lab στη Σητεία: laser σώματος, καθαρισμός & ενυδάτωση προσώπου, πρόγραμμα σώματος με διατροφή, ετοιμασία για γάμο.",
+    canonical: "prosfores.html",
+    keywords: "προσφορές αισθητικής Σητεία, πακέτα laser Σητεία, προσφορά καθαρισμός προσώπου, πακέτο αδυνατίσματος Λασίθι, Beauty Lab προσφορές",
+    ld,
+  }) +
+    header(depth, "offers") +
+    crumbs(depth, trail) +
+    `
+  <main id="main">
+    <section class="page-hero page-hero--tight">
+      <div class="container">
+        <p class="eyebrow reveal">Οι προσφορές μας</p>
+        <h1 class="page-title reveal">Προσφορές &amp; πακέτα</h1>
+        <p class="page-lead reveal">Θεραπείες που η μία στηρίζει την άλλη, σε πακέτο με σταθερή τιμή. Ρωτήστε μας τι ταιριάζει στη δική σας περίπτωση — δεν χρειάζεστε πάντα το μεγαλύτερο πακέτο.</p>
+      </div>
+    </section>
+
+    <section class="offers-page">
+      <div class="container offers-list">${blocks}
+      </div>
+    </section>
+  </main>` +
+    ctaBand(depth) +
+    footer(depth);
+}
+
+// ====================================================================
 //  PAGE: ONLINE ΡΑΝΤΕΒΟΥ
 // ====================================================================
 function pageBooking() {
@@ -1461,6 +1583,7 @@ function buildSitemap() {
     ...POSTS.map((p) => ({ loc: "blog/" + p.slug + ".html", pr: "0.6", cf: "monthly", lm: p.date })),
     { loc: "epikoinonia.html", pr: "0.8", cf: "yearly" },
     { loc: "ratevou.html", pr: "0.9", cf: "monthly" },
+    { loc: "prosfores.html", pr: "0.9", cf: "weekly" },
   ];
   const today = new Date().toISOString().slice(0, 10);
   const body = urls
@@ -1487,6 +1610,7 @@ write("index.html", pageHome());
 write("i-elena.html", pageAbout());
 write("epikoinonia.html", pageContact());
 write("ratevou.html", pageBooking());
+write("prosfores.html", pageOffers());
 write("ypiresies/index.html", pageServicesHub());
 SERVICES.forEach((s, i) => write("ypiresies/" + s.slug + ".html", pageService(s, i)));
 AREAS.forEach((a) => write("perioches/" + a.slug + ".html", pageArea(a)));
