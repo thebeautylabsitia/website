@@ -80,9 +80,9 @@
       <div class="container booking-grid">
         <div class="bk" id="bk" data-availability="https://n8n.srv1214488.hstgr.cloud/webhook/beautylab" data-booking="https://n8n.srv1214488.hstgr.cloud/webhook/beautylab-kratisi">
           <ol class="bk-steps" id="bkSteps" aria-label="Βήματα κράτησης">
-            <li data-step="1"><span>1</span> Θεραπεία</li>
-            <li data-step="2"><span>2</span> Ημέρα &amp; ώρα</li>
-            <li data-step="3"><span>3</span> Στοιχεία</li>
+            <li data-step="1"><button type="button" data-goto="1" disabled><span>1</span> Θεραπεία</button></li>
+            <li data-step="2"><button type="button" data-goto="2" disabled><span>2</span> Ημέρα &amp; ώρα</button></li>
+            <li data-step="3"><button type="button" data-goto="3" disabled><span>3</span> Στοιχεία</button></li>
           </ol>
 
           <div class="bk-stage" id="bkStage" aria-live="polite">
@@ -153,14 +153,25 @@
       for (var i = 0; i < items.length; i++) {
         var s = Number(items[i].getAttribute('data-step'));
         items[i].className = s < n ? 'is-done' : (s === n ? 'is-active' : '');
+        // Τα ολοκληρωμένα βήματα γίνονται κλικαρίσιμα, για να γυρίζει κανείς πίσω.
+        items[i].querySelector('button').disabled = s >= n;
       }
       stepsEl.hidden = n > 3;
     }
 
-    function fail(msg) {
+    // Το βελάκι επιστροφής — μπαίνει πάνω-πάνω σε κάθε οθόνη μετά την πρώτη.
+    function backBtn(label) {
+      return '<button type="button" class="bk-back" id="bkBack">' +
+             '<span class="bk-back-i" aria-hidden="true">←</span>' +
+             '<span>' + esc(label) + '</span></button>';
+    }
+
+    function fail(msg, back, backLabel) {
       stage.innerHTML =
+        (back ? backBtn(backLabel || 'Πίσω') : '') +
         '<div class="bk-error"><p>' + esc(msg) + '</p>' +
         '<p class="bk-fine">Μπορείτε πάντα να μας καλέσετε στο <a href="tel:+302843023010">' + esc(PHONE) + '</a>.</p></div>';
+      if (back) stage.querySelector('#bkBack').addEventListener('click', back);
     }
 
     function api(url) {
@@ -255,7 +266,7 @@
     function renderPrep() {
       var s = state.service;
       stage.innerHTML =
-        '<button type="button" class="bk-back" id="bkBack">← Άλλη θεραπεία</button>' +
+        backBtn('Άλλη θεραπεία') +
         '<h2 class="bk-title">' + esc(s.name) + '</h2>' +
         '<p class="bk-sub">Έχετε ξυρίσει την περιοχή πριν έρθετε;</p>' +
         '<div class="bk-choice">' +
@@ -297,7 +308,8 @@
       api(url).then(function (r) {
         state.loading = false;
         if (!r.ok || !r.body || r.body.ok === false) {
-          fail((r.body && r.body.message) || 'Δεν μπορέσαμε να δούμε τις διαθέσιμες ώρες.');
+          fail((r.body && r.body.message) || 'Δεν μπορέσαμε να δούμε τις διαθέσιμες ώρες.',
+               renderServices, 'Άλλη θεραπεία');
           return;
         }
         state.duration = r.body.durationMinutes;
@@ -307,7 +319,8 @@
         renderCalendar();
       }).catch(function () {
         state.loading = false;
-        fail('Δεν υπάρχει σύνδεση με το σύστημα κρατήσεων αυτή τη στιγμή.');
+        fail('Δεν υπάρχει σύνδεση με το σύστημα κρατήσεων αυτή τη στιγμή.',
+             renderServices, 'Άλλη θεραπεία');
       });
     }
 
@@ -321,7 +334,7 @@
       var mins = state.duration || (s.minutes + (state.prep ? 0 : s.prepExtra));
       var off = monthOffset();
 
-      var h = '<button type="button" class="bk-back" id="bkBack">← Άλλη θεραπεία</button>' +
+      var h = backBtn('Άλλη θεραπεία') +
         '<h2 class="bk-title">' + esc(s.name) + '</h2>' +
         '<p class="bk-sub">' + esc(s.group) + ' · ' + mins + ' λεπτά' +
         (s.prepExtra > 0 ? ' · ' + (state.prep ? 'με προετοιμασία' : 'χωρίς προετοιμασία') : '') +
@@ -409,13 +422,22 @@
       }
     }
 
+    // Επιστροφή στο ημερολόγιο χωρίς νέα κλήση, αν οι μέρες είναι ήδη φορτωμένες.
+    function backToCalendar() {
+      state.slot = null;
+      if (!state.service) { renderServices(); return; }
+      if (!state.days) { loadMonth(); return; }
+      setStep(2);
+      renderCalendar();
+    }
+
     // ---------- Βήμα 3: στοιχεία ----------
     function renderForm() {
       setStep(3);
       var parts = state.day.split('-');
       var when = (+parts[2]) + ' ' + MONTHS[+parts[1] - 1] + ' ' + parts[0] + ', ' + state.slot.label;
       stage.innerHTML =
-        '<button type="button" class="bk-back" id="bkBack">← Άλλη ώρα</button>' +
+        backBtn('Άλλη ημέρα ή ώρα') +
         '<h2 class="bk-title">Τα στοιχεία σας</h2>' +
         '<div class="bk-summary">' +
         '<p><strong>' + esc(state.service.name) + '</strong></p>' +
@@ -432,9 +454,7 @@
         '<p class="bk-fine">Θα σας στείλουμε υπενθύμιση με SMS την προηγούμενη ημέρα.</p>' +
         '</form>';
 
-      stage.querySelector('#bkBack').addEventListener('click', function () {
-        state.slot = null; renderCalendar();
-      });
+      stage.querySelector('#bkBack').addEventListener('click', backToCalendar);
       stage.querySelector('#bkForm').addEventListener('submit', submitBooking);
     }
 
@@ -511,6 +531,16 @@
       if (again) again.addEventListener('click', function () {
         state.service = null; state.day = null; state.slot = null; state.days = null;
         renderServices();
+      });
+    }
+
+    // Κλικ πάνω στα ολοκληρωμένα βήματα της μπάρας — δεύτερος τρόπος επιστροφής.
+    var navs = stepsEl.querySelectorAll('button[data-goto]');
+    for (var n = 0; n < navs.length; n++) {
+      navs[n].addEventListener('click', function () {
+        var to = Number(this.getAttribute('data-goto'));
+        if (to === 1) { renderServices(); }
+        else if (to === 2) { backToCalendar(); }
       });
     }
 

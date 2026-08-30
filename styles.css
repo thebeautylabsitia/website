@@ -1323,6 +1323,25 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
   border: 1px solid var(--line);
   font-size: 0.75rem;
 }
+.bk-steps button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: default;
+}
+/* Ένα ολοκληρωμένο βήμα το πατάς για να γυρίσεις σ' αυτό. */
+.bk-steps li.is-done button { cursor: pointer; }
+.bk-steps li.is-done button:hover { color: var(--rose-deep); }
+.bk-steps li.is-done button:hover span { border-color: var(--rose-deep); }
+.bk-steps button:focus-visible { outline: 2px solid var(--rose-deep); outline-offset: 4px; border-radius: 4px; }
 .bk-steps li.is-active { opacity: 1; color: var(--cocoa); }
 .bk-steps li.is-active span { background: var(--rose-deep); border-color: var(--rose-deep); color: var(--white); }
 .bk-steps li.is-done { opacity: 1; color: var(--mocha); }
@@ -1340,18 +1359,39 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
 .bk-fine { color: var(--ink-soft); font-size: 0.86rem; margin: 1rem 0 0; }
 .bk-loading { color: var(--ink-soft); font-style: italic; margin: 1.2rem 0 0; }
 
+/* Βελάκι επιστροφής — αρκετά ευδιάκριτο ώστε να το βρει κανείς
+   αν πάτησε λάθος θεραπεία. */
 .bk-back {
-  background: none;
-  border: 0;
-  padding: 0;
-  margin: 0 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.32rem 1rem 0.32rem 0.34rem;
+  margin: 0 0 1.3rem;
   cursor: pointer;
   font-family: var(--sans);
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   color: var(--mocha);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
-.bk-back:hover { color: var(--rose-deep); text-decoration: underline; }
+.bk-back-i {
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: var(--beige);
+  color: var(--cocoa);
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: transform 0.2s var(--ease);
+}
+.bk-back:hover { border-color: var(--rose-deep); color: var(--rose-deep); }
+.bk-back:hover .bk-back-i { transform: translateX(-3px); }
+.bk-back:focus-visible { outline: 2px solid var(--rose-deep); outline-offset: 2px; }
 .bk-link {
   background: none;
   border: 0;
