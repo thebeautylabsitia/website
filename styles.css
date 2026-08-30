@@ -1924,3 +1924,299 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
 @media (max-width: 780px) {
   .offer-full-body { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   Προσφορές: «Θάλαμος φωτός» (μόνο στη σελίδα prosfores.html)
+
+   Η ιδέα βγαίνει από τα ίδια τα μηχανήματα του ινστιτούτου: το φως
+   είναι το εργαλείο. Έτσι το χρυσό εδώ δεν είναι διακόσμηση, είναι
+   δέσμη. Κάνει τρία πράγματα και τίποτε άλλο:
+     1. περιστρέφεται αργά στο περίγραμμα κάθε πακέτου,
+     2. σαρώνει μία φορά την κάρτα μόλις εμφανιστεί στην οθόνη,
+     3. ακολουθεί τον κέρσορα μέσα στην κάρτα.
+   Η ενότητα σβήνει στο μαύρο και συνεχίζει ως το footer.
+   ============================================================ */
+.page-offers {
+  --obsidian:     #0b0907;
+  --panel:        #15110a;
+  --panel-deep:   #0d0a07;
+  --beam:         #f3ddb0;
+  --beam-deep:    #c8933f;
+  --hair:         rgba(200, 147, 63, 0.24);
+  --on-dark:      #ece5d8;
+  --on-dark-soft: #a89b85;
+}
+
+/* --- Η ενότητα --- */
+.page-offers .offers-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: var(--on-dark);
+  background:
+    radial-gradient(130% 62% at 50% 0%, #1b1409 0%, var(--obsidian) 64%);
+  padding-block: clamp(3rem, 6vw, 4.5rem) var(--section-y);
+}
+/* Ο ορίζοντας: η λεπτή γραμμή όπου το φως ανάβει */
+.page-offers .offers-page::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, rgba(243, 221, 176, 0.7), transparent);
+}
+/* Κάνναβος οργάνου, ξεθωριάζει προς τα κάτω */
+.page-offers .offers-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(200, 147, 63, 0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(200, 147, 63, 0.10) 1px, transparent 1px);
+  background-size: 92px 92px;
+  -webkit-mask-image: radial-gradient(120% 66% at 50% 0%, #000 0%, transparent 72%);
+          mask-image: radial-gradient(120% 66% at 50% 0%, #000 0%, transparent 72%);
+}
+.page-offers .offers-list { position: relative; z-index: 1; }
+
+/* --- Η κάρτα: το 1px περίγραμμα είναι η ίδια η δέσμη --- */
+.page-offers .offer-full {
+  position: relative;
+  padding: 1px;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  overflow: hidden;
+  scroll-margin-top: 100px;
+}
+.page-offers .offer-full::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg,
+    rgba(200, 147, 63, 0.45), rgba(200, 147, 63, 0.08) 45%, rgba(200, 147, 63, 0.3));
+}
+.page-offers .offer-beam {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  opacity: 0.4;
+  background: conic-gradient(from 0deg,
+    transparent 0 66%,
+    rgba(243, 221, 176, 0.85) 78%,
+    rgba(200, 147, 63, 0.3) 86%,
+    transparent 92%);
+  animation: offerBeam 22s linear infinite;
+  animation-play-state: paused;
+  transition: opacity .5s var(--ease);
+  will-change: transform;
+}
+.page-offers .offer-full.in .offer-beam { animation-play-state: running; }
+.page-offers .offer-full:hover .offer-beam,
+.page-offers .offer-full:focus-within .offer-beam { opacity: 0.9; }
+@keyframes offerBeam { to { rotate: 360deg; } }
+
+/* Η σάρωση: μία φορά, μόλις η κάρτα μπει στην οθόνη */
+.page-offers .offer-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(243, 221, 176, 0) 0 82%,
+    rgba(243, 221, 176, 0.10) 90%,
+    rgba(243, 221, 176, 0.7) 97%,
+    rgba(243, 221, 176, 0) 100%);
+  will-change: transform;
+}
+.page-offers .offer-full.in .offer-scan {
+  animation: offerScan 1.5s var(--ease) .15s both;
+}
+@keyframes offerScan {
+  0%   { opacity: 0; transform: translateY(-100%); }
+  12%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+/* Το κέλυφος με το περιεχόμενο */
+.page-offers .offer-shell {
+  position: relative;
+  z-index: 1;
+  border-radius: 21px;
+  padding: clamp(1.6rem, 3.5vw, 2.6rem);
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--panel), var(--panel-deep));
+}
+/* Το φως ακολουθεί τον κέρσορα (θέση από το main.js) */
+.page-offers .offer-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(243, 221, 176, 0.11), transparent 68%);
+  transition: opacity .45s var(--ease);
+}
+.page-offers .offer-full:hover .offer-shell::before { opacity: 1; }
+.page-offers .offer-full-head,
+.page-offers .offer-full-body { position: relative; z-index: 1; }
+
+/* --- Τυπογραφία & επιφάνειες μέσα στο σκοτάδι --- */
+.page-offers .offer-full-head { border-bottom-color: var(--hair); }
+.page-offers .offer-full-head .offer-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  margin: 0;
+  font-size: 1.45rem;
+  color: var(--beam);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, rgba(200, 147, 63, 0.32), rgba(200, 147, 63, 0.04) 70%);
+  box-shadow: inset 0 0 0 1px rgba(200, 147, 63, 0.38), 0 0 34px -8px rgba(200, 147, 63, 0.75);
+}
+.page-offers .offer-full-title {
+  background: linear-gradient(96deg, #fffaf0 0%, var(--beam) 52%, var(--beam-deep) 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.page-offers .offer-full-lead { color: var(--on-dark-soft); }
+.page-offers .offer-full-copy p { color: #cdc4b4; }
+.page-offers .offer-neo {
+  background: linear-gradient(100deg, var(--beam-deep), var(--beam));
+  color: #14100a;
+  box-shadow: 0 0 22px -4px rgba(200, 147, 63, 0.9);
+}
+.page-offers .offer-full-side {
+  background: linear-gradient(180deg, rgba(243, 221, 176, 0.06), rgba(243, 221, 176, 0.015));
+  border: 1px solid var(--hair);
+}
+.page-offers .offer-full-side h3 { color: #d3a869; }
+.page-offers .offer-full-side .ticks li {
+  color: #ded5c5;
+  border-bottom-color: rgba(200, 147, 63, 0.16);
+}
+.page-offers .offer-full-side .ticks li::before { color: var(--beam); }
+.page-offers .offer-full-price {
+  background: linear-gradient(96deg, var(--beam), var(--beam-deep));
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.page-offers .offer-full-ask { color: var(--on-dark-soft); }
+.page-offers .offer-full-valid { color: #d3a869; }
+
+/* --- Κουμπιά πάνω στο μαύρο --- */
+.page-offers .offers-page .btn-primary,
+.page-offers .cta-band .btn-primary {
+  background: linear-gradient(100deg, var(--beam-deep), #e7c489);
+  color: #14100a;
+  box-shadow: 0 16px 34px -18px rgba(200, 147, 63, 0.9);
+}
+.page-offers .offers-page .btn-primary:hover,
+.page-offers .cta-band .btn-primary:hover {
+  background: linear-gradient(100deg, #e7c489, var(--beam));
+  box-shadow: 0 20px 40px -16px rgba(200, 147, 63, 0.95);
+}
+.page-offers .offers-page .btn-ghost,
+.page-offers .cta-band .btn-ghost {
+  color: var(--beam);
+  border-color: rgba(200, 147, 63, 0.5);
+}
+.page-offers .offers-page .btn-ghost:hover,
+.page-offers .cta-band .btn-ghost:hover {
+  background: rgba(243, 221, 176, 0.1);
+  border-color: var(--beam);
+  color: var(--beam);
+}
+
+/* --- Η ζώνη CTA συνεχίζει στο σκοτάδι μέχρι το footer --- */
+.page-offers .cta-band {
+  background: linear-gradient(180deg, var(--obsidian), var(--cocoa));  /* καταλήγει στο χρώμα του footer */
+  border-top: 1px solid var(--hair);
+}
+.page-offers .cta-band .eyebrow { color: #d3a869; }
+.page-offers .cta-title { color: #f4ecdd; }
+.page-offers .cta-sub { color: var(--on-dark-soft); }
+
+@media (max-width: 780px) {
+  .page-offers .offer-beam { opacity: 0.28; }
+  .page-offers .offers-page::after { background-size: 64px 64px; }
+}
+
+/* ============================================================
+   «Προσφορές» στο μενού
+
+   Το μόνο σημείο του μενού που κινείται: μια χρυσή σπίθα περνά
+   αργά κάτω από τη λέξη, ίδια γλώσσα με τον θάλαμο φωτός της
+   σελίδας. Δίπλα της, μικρό σήμα ΝΕΕΣ στη γωνία.
+   ============================================================ */
+.nav-links a.nav-offers { color: var(--rose-deep); font-weight: 500; }
+.nav-links a.nav-offers:hover { color: var(--cocoa); }
+.nav-links a.nav-offers::after { content: none; }
+
+.nav-offers-word {
+  position: relative;
+  display: inline-block;
+  padding-right: 3.2em;       /* η θέση του σήματος, ώστε να μη σπρώχνει το μενού */
+}
+.nav-offers-text { position: relative; display: inline-block; }
+/* Η ράγα */
+.nav-offers-text::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -5px;
+  height: 1px;
+  background: rgba(184, 133, 63, 0.42);
+}
+/* Η σπίθα που τρέχει πάνω της */
+.nav-offers-text::before {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 36%;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--rose-deep), transparent);
+  animation: navSpark 5s var(--ease) 1.2s infinite;
+}
+.nav-links a.nav-offers:hover .nav-offers-text::after { background: var(--rose); }
+@keyframes navSpark {
+  0%, 10%   { transform: translateX(-14%); opacity: 0; }
+  20%       { opacity: 1; }
+  62%       { opacity: 1; }
+  76%, 100% { transform: translateX(178%); opacity: 0; }
+}
+
+.nav-offers-tag {
+  position: absolute;
+  top: -0.5em;
+  right: 0;
+  padding: 0.28em 0.45em 0.25em;
+  border-radius: 100px;
+  background: #8a5a24;
+  color: var(--white);
+  font-size: 0.62em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 0 0 3px rgba(253, 250, 247, 0.9);
+}
+.nav-links a.nav-offers[aria-current="page"] .nav-offers-text::after { background: var(--rose-deep); }
+
+/* Στη σκοτεινή σελίδα των προσφορών, το σήμα κρατά τον δικό της χρυσό */
+.page-offers .nav-offers-tag { background: var(--rose-deep); }

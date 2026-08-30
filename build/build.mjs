@@ -116,7 +116,7 @@ const faqLD = (faq) => ({
 });
 
 // ---- <head> ---------------------------------------------------------
-function head({ depth, title, desc, canonical, keywords, ld = [], image = "assets/logo.jpg", type = "website" }) {
+function head({ depth, title, desc, canonical, keywords, ld = [], image = "assets/logo.jpg", type = "website", bodyClass = "" }) {
   const r = (p) => rel(depth, p);
   const ldTags = ld.map(jsonLd).join("\n  ");
   return `
@@ -153,7 +153,7 @@ function head({ depth, title, desc, canonical, keywords, ld = [], image = "asset
   <link rel="stylesheet" href="${r("styles.css")}" />
   ${ldTags ? "\n  " + ldTags : ""}
 </head>
-<body>`;
+<body${bodyClass ? ` class="${bodyClass}"` : ""}>`;
 }
 
 // ---- header ---------------------------------------------------------
@@ -167,7 +167,7 @@ function header(depth, active = "") {
   <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
   <header class="site-header${active === "home" ? " site-header--home" : ""}" id="top">
     <nav class="nav container" aria-label="Κύρια πλοήγηση">
-      <a href="${r("index.html")}" class="brand" aria-label="${attr(BIZ.name)} — Αρχική">
+      <a href="${r("index.html")}" class="brand" aria-label="${attr(BIZ.name)}, Αρχική">
         <img src="${r("assets/logo.png")}" alt="${attr(BIZ.legalName)}" class="brand-logo" width="204" height="270" />
       </a>
       <button class="nav-toggle" aria-label="Άνοιγμα μενού" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -180,7 +180,7 @@ function header(depth, active = "") {
             ${svcLinks}
           </ul>
         </li>
-        ${OFFERS.length ? `<li><a href="${r("prosfores.html")}"${on("offers")}>Προσφορές</a></li>` : ""}
+        ${OFFERS.length ? `<li><a href="${r("prosfores.html")}" class="nav-offers"${on("offers")}><span class="nav-offers-word"><span class="nav-offers-text">Προσφορές</span><span class="nav-offers-tag">ΝΕΕΣ</span></span></a></li>` : ""}
         <li><a href="${r("blog/index.html")}"${on("blog")}>Blog</a></li>
         <li><a href="${r("epikoinonia.html")}"${on("contact")}>Επικοινωνία</a></li>
         <li><a href="${r("ratevou.html")}" class="btn btn-nav"${on("booking")}>Ραντεβού Online</a></li>
@@ -211,7 +211,7 @@ function ctaBand(depth) {
       <div>
         <p class="eyebrow">Κλείστε το ραντεβού σας</p>
         <h2 class="cta-title">Love your own <em>beauty.</em></h2>
-        <p class="cta-sub">Λειτουργούμε κατόπιν ραντεβού — κλείστε online σε ένα λεπτό ή καλέστε μας.</p>
+        <p class="cta-sub">Λειτουργούμε κατόπιν ραντεβού. Κλείστε online σε ένα λεπτό ή καλέστε μας.</p>
       </div>
       <div class="cta-actions">
         <a href="${r("ratevou.html")}" class="btn btn-primary">Ραντεβού Online</a>
@@ -310,7 +310,7 @@ function offersSection(depth) {
         <div class="section-head reveal">
           <p class="eyebrow">Οι προσφορές μας</p>
           <h2 class="section-title">Συνδυασμοί που <em>δουλεύουν</em> μαζί</h2>
-          <p class="section-lead">Δεν είναι τυχαία πακέτα. Είναι θεραπείες που η μία στηρίζει την άλλη — γι' αυτό τις προτείνουμε μαζί.</p>
+          <p class="section-lead">Δεν είναι τυχαία πακέτα. Είναι θεραπείες που η μία στηρίζει την άλλη, γι' αυτό τις προτείνουμε μαζί.</p>
         </div>
         <div class="offers-grid">${OFFERS.map((o) => offerCard(depth, o)).join("")}
         </div>
@@ -336,12 +336,12 @@ function machinesSection() {
       <div class="container">
         <div class="section-head reveal">
           <p class="eyebrow">Ο εξοπλισμός μας</p>
-          <h2 class="section-title">Τα μηχανήματα —<br />και <em>γιατί</em> το καθένα</h2>
-          <p class="section-lead">Δεν αγοράσαμε μηχανήματα για να τα έχουμε. Κάθε ένα καλύπτει μια συγκεκριμένη ανάγκη που τα υπόλοιπα δεν καλύπτουν σωστά — γι' αυτό, πριν από κάθε θεραπεία, γίνεται αξιολόγηση και επιλέγεται το κατάλληλο.</p>
+          <h2 class="section-title">Τα μηχανήματα<br />και <em>γιατί</em> το καθένα</h2>
+          <p class="section-lead">Δεν αγοράσαμε μηχανήματα για να τα έχουμε. Κάθε ένα καλύπτει μια συγκεκριμένη ανάγκη που τα υπόλοιπα δεν καλύπτουν σωστά. Γι' αυτό, πριν από κάθε θεραπεία, γίνεται αξιολόγηση και επιλέγεται το κατάλληλο.</p>
         </div>
         <div class="machines-grid">${cards}
         </div>
-        <p class="machines-note reveal">Το μηχάνημα από μόνο του δεν κάνει το αποτέλεσμα. Το κάνει η σωστή επιλογή, η σωστή ένταση για το δικό σας δέρμα και η συνέπεια στις συνεδρίες — και αυτά είναι δουλειά του ανθρώπου που το χειρίζεται.</p>
+        <p class="machines-note reveal">Το μηχάνημα από μόνο του δεν κάνει το αποτέλεσμα. Το κάνει η σωστή επιλογή, η σωστή ένταση για το δικό σας δέρμα και η συνέπεια στις συνεδρίες, και αυτά είναι δουλειά του ανθρώπου που το χειρίζεται.</p>
       </div>
     </section>`;
 }
@@ -378,7 +378,7 @@ function pageHome() {
   return head({
     depth,
     title: "Αισθητικός & Διαιτολόγος Σητεία | Beauty Lab by Elena Spyridaki",
-    desc: "Beauty Lab by Elena Spyridaki — ινστιτούτο αισθητικής στη Σητεία από το 2008. Θεραπείες προσώπου & σώματος, αποτρίχωση laser Alexandrite & Diode και διαιτολογική υποστήριξη από πτυχιούχο διαιτολόγο. Κατόπιν ραντεβού.",
+    desc: "Beauty Lab by Elena Spyridaki, ινστιτούτο αισθητικής στη Σητεία από το 2008. Θεραπείες προσώπου & σώματος, αποτρίχωση laser Alexandrite & Diode και διαιτολογική υποστήριξη από πτυχιούχο διαιτολόγο. Κατόπιν ραντεβού.",
     canonical: "index.html",
     keywords: "αισθητικός Σητεία, ινστιτούτο αισθητικής Σητεία, διαιτολόγος Σητεία, αποτρίχωση laser Σητεία, θεραπείες προσώπου Λασίθι, αδυνάτισμα Σητεία, Έλενα Σπυριδάκη",
     ld,
@@ -388,7 +388,7 @@ function pageHome() {
   <main id="main">
     <section class="hero" id="hero">
       <div class="hero-inner container">
-        <img class="hero-logo reveal" src="${r("assets/logo-mark.png")}" alt="${attr(BIZ.legalName)} — Love your own beauty" width="408" height="540" fetchpriority="high" />
+        <img class="hero-logo reveal" src="${r("assets/logo-mark.png")}" alt="${attr(BIZ.legalName)}, Love your own beauty" width="408" height="540" fetchpriority="high" />
         <h1 class="hero-title reveal">Beauty Lab<span class="hero-title-sub">by Elena Spyridaki</span></h1>
         <p class="hero-tagline reveal">Love your own <em>beauty.</em></p>
         <ul class="hero-pillars reveal">
@@ -396,7 +396,7 @@ function pageHome() {
           <li>${ICONS.body}<span>Θεραπείες Σώματος</span></li>
           <li>${ICONS.leaf}<span>Διατροφή &amp; Ευεξία</span></li>
         </ul>
-        <p class="hero-lead reveal">Αισθητικός κοσμητολόγος και <em>διαιτολόγος</em> στον ίδιο χώρο — γιατί η ομορφιά χτίζεται και <em>απ' έξω και από μέσα</em>.</p>
+        <p class="hero-lead reveal">Αισθητικός κοσμητολόγος και <em>διαιτολόγος</em> στον ίδιο χώρο, γιατί η ομορφιά χτίζεται και <em>απ' έξω και από μέσα</em>.</p>
         <div class="hero-actions reveal">
           <a href="${r("ratevou.html")}" class="btn btn-primary">Κλείστε Ραντεβού</a>
           <a href="${r("ypiresies/index.html")}" class="btn btn-ghost">Οι Υπηρεσίες μας</a>
@@ -422,13 +422,13 @@ function pageHome() {
     <section class="about" id="about">
       <div class="container about-grid">
         <div class="about-media reveal">
-          <img src="${r("assets/institute.jpg")}" alt="Ο χώρος του Beauty Lab by Elena Spyridaki — ινστιτούτο αισθητικής στη Σητεία" width="682" height="387" />
+          <img src="${r("assets/institute.jpg")}" alt="Ο χώρος του Beauty Lab by Elena Spyridaki, ινστιτούτο αισθητικής στη Σητεία" width="682" height="387" />
         </div>
         <div class="about-copy">
           <p class="eyebrow reveal">Η Έλενα</p>
           <h2 class="section-title reveal">Έλενα Σπυριδάκη</h2>
           <p class="about-role reveal">Αισθητικός Κοσμητολόγος &amp; Διαιτολόγος</p>
-          <p class="reveal">Σπούδασε αισθητική στο City College του Manchester και ολοκλήρωσε τις σπουδές της ως αισθητικός κοσμητολόγος στο ΤΕΙ Αθήνας — το σημερινό Πανεπιστήμιο Δυτικής Αττικής.</p>
+          <p class="reveal">Σπούδασε αισθητική στο City College του Manchester και ολοκλήρωσε τις σπουδές της ως αισθητικός κοσμητολόγος στο ΤΕΙ Αθήνας, το σημερινό Πανεπιστήμιο Δυτικής Αττικής.</p>
           <p class="reveal">Στη συνέχεια σπούδασε διαιτολογία στο ΤΕΙ Κρήτης, το σημερινό ΕΛΜΕΠΑ (2004–2008). Ο συνδυασμός των δύο ειδικοτήτων είναι και η φιλοσοφία του Beauty Lab: η θεραπεία στην καμπίνα και το διατροφικό πλάνο σχεδιάζονται μαζί.</p>
           <p class="reveal">Με εμπειρία ως αισθητικός στο Manchester και στην Αθήνα, διδακτικό έργο στο ΕΠΑΛ Νεάπολης και στο ΙΕΚ Σητείας, διατηρεί το δικό της ινστιτούτο αισθητικής στη Σητεία από το 2008.</p>
           <a href="${r("i-elena.html")}" class="btn btn-ghost reveal">Το πλήρες βιογραφικό →</a>
@@ -454,7 +454,7 @@ function pageHome() {
       <div class="container philosophy-inner reveal">
         <p class="eyebrow">Η Φιλοσοφία μας</p>
         <span class="philosophy-mark" aria-hidden="true">&ldquo;</span>
-        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως — η ομορφιά χτίζεται και από μέσα.</blockquote>
+        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως. Η ομορφιά χτίζεται και από μέσα.</blockquote>
         <cite class="philosophy-cite">Έλενα Σπυριδάκη · Αισθητικός Κοσμητολόγος &amp; Διαιτολόγος</cite>
       </div>
     </section>
@@ -485,8 +485,8 @@ function pageAbout() {
       url: abs("i-elena.html"),
       alumniOf: [
         "City College Manchester",
-        "ΤΕΙ Αθήνας — Πανεπιστήμιο Δυτικής Αττικής (ΠΑΔΑ)",
-        "ΤΕΙ Κρήτης — Ελληνικό Μεσογειακό Πανεπιστήμιο (ΕΛΜΕΠΑ)",
+        "ΤΕΙ Αθήνας, Πανεπιστήμιο Δυτικής Αττικής (ΠΑΔΑ)",
+        "ΤΕΙ Κρήτης, Ελληνικό Μεσογειακό Πανεπιστήμιο (ΕΛΜΕΠΑ)",
       ],
       worksFor: { "@id": `${BASE}/#studio` },
       sameAs: [BIZ.instagram, BIZ.facebook],
@@ -494,7 +494,7 @@ function pageAbout() {
   ];
   return head({
     depth,
-    title: "Έλενα Σπυριδάκη — Αισθητικός Κοσμητολόγος & Διαιτολόγος | Beauty Lab",
+    title: "Έλενα Σπυριδάκη, Αισθητικός Κοσμητολόγος & Διαιτολόγος | Beauty Lab",
     desc: "Γνωρίστε την Έλενα Σπυριδάκη: σπουδές αισθητικής στο Manchester και στο ΤΕΙ Αθήνας (ΠΑΔΑ), διαιτολογία στο ΕΛΜΕΠΑ, διδακτικό έργο και δικό της ινστιτούτο αισθητικής στη Σητεία από το 2008.",
     canonical: "i-elena.html",
     keywords: "Έλενα Σπυριδάκη, αισθητικός κοσμητολόγος Σητεία, διαιτολόγος Σητεία, βιογραφικό αισθητικού, Beauty Lab Σητεία",
@@ -516,10 +516,10 @@ function pageAbout() {
           <h1 class="section-title reveal">Έλενα Σπυριδάκη</h1>
           <p class="about-role reveal">Αισθητικός Κοσμητολόγος &amp; Διαιτολόγος</p>
           <p class="reveal">Η διαδρομή της ξεκίνησε στην Αγγλία, με σπουδές αισθητικής στο City College του Manchester και παράλληλη εκπαίδευση στη φυσική αγωγή στο University of Salford.</p>
-          <p class="reveal">Ολοκλήρωσε τις σπουδές της ως αισθητικός κοσμητολόγος στο ΤΕΙ Αθήνας — το σημερινό Πανεπιστήμιο Δυτικής Αττικής (ΠΑΔΑ). Στη συνέχεια σπούδασε διαιτολογία στο ΤΕΙ Κρήτης, το σημερινό Ελληνικό Μεσογειακό Πανεπιστήμιο (ΕΛΜΕΠΑ), από το 2004 έως το 2008.</p>
+          <p class="reveal">Ολοκλήρωσε τις σπουδές της ως αισθητικός κοσμητολόγος στο ΤΕΙ Αθήνας, το σημερινό Πανεπιστήμιο Δυτικής Αττικής (ΠΑΔΑ). Στη συνέχεια σπούδασε διαιτολογία στο ΤΕΙ Κρήτης, το σημερινό Ελληνικό Μεσογειακό Πανεπιστήμιο (ΕΛΜΕΠΑ), από το 2004 έως το 2008.</p>
           <p class="reveal">Εργάστηκε ως αισθητικός στο Manchester το 1998 και στην Αθήνα από το 2001 έως το 2003, αποκτώντας εμπειρία σε διαφορετικά περιβάλλοντα και σχολές σκέψης.</p>
           <p class="reveal">Παράλληλα με την κλινική πράξη, δίδαξε στο ΕΠΑΛ Νεάπολης (2003–2004) και στο ΙΕΚ Σητείας (2007–2008 και 2013–2014), μεταφέροντας την εμπειρία της σε νέους επαγγελματίες του χώρου.</p>
-          <p class="reveal">Από το 2008 διατηρεί το δικό της ινστιτούτο αισθητικής στη Σητεία. Ο διπλός τίτλος — αισθητικός και διαιτολόγος — της επιτρέπει να αντιμετωπίζει κάθε περίπτωση συνολικά: η θεραπεία και η διατροφή σχεδιάζονται μαζί, με κοινό στόχο και ρεαλιστικές προσδοκίες.</p>
+          <p class="reveal">Από το 2008 διατηρεί το δικό της ινστιτούτο αισθητικής στη Σητεία. Ο διπλός τίτλος, αισθητικός και διαιτολόγος, της επιτρέπει να αντιμετωπίζει κάθε περίπτωση συνολικά: η θεραπεία και η διατροφή σχεδιάζονται μαζί, με κοινό στόχο και ρεαλιστικές προσδοκίες.</p>
         </div>
       </div>
     </section>
@@ -527,9 +527,9 @@ function pageAbout() {
     <section class="creds">
       <div class="container">
         <div class="creds-grid">
-          <div class="cred reveal"><span class="cred-k">City College Manchester</span><span class="cred-v">Σπουδές Αισθητικής — Αγγλία</span></div>
-          <div class="cred reveal"><span class="cred-k">ΤΕΙ Αθήνας — ΠΑΔΑ</span><span class="cred-v">Αισθητικός Κοσμητολόγος</span></div>
-          <div class="cred reveal"><span class="cred-k">ΤΕΙ Κρήτης — ΕΛΜΕΠΑ</span><span class="cred-v">Διαιτολογία, 2004–2008</span></div>
+          <div class="cred reveal"><span class="cred-k">City College Manchester</span><span class="cred-v">Σπουδές Αισθητικής, Αγγλία</span></div>
+          <div class="cred reveal"><span class="cred-k">ΤΕΙ Αθήνας, ΠΑΔΑ</span><span class="cred-v">Αισθητικός Κοσμητολόγος</span></div>
+          <div class="cred reveal"><span class="cred-k">ΤΕΙ Κρήτης, ΕΛΜΕΠΑ</span><span class="cred-v">Διαιτολογία, 2004–2008</span></div>
           <div class="cred reveal"><span class="cred-k">University of Salford</span><span class="cred-v">Εκπαίδευση στη φυσική αγωγή</span></div>
           <div class="cred reveal"><span class="cred-k">Διδακτικό έργο</span><span class="cred-v">ΕΠΑΛ Νεάπολης &amp; ΙΕΚ Σητείας</span></div>
           <div class="cred reveal"><span class="cred-k">Από το 2008</span><span class="cred-v">Δικό της ινστιτούτο αισθητικής στη Σητεία</span></div>
@@ -541,7 +541,7 @@ function pageAbout() {
       <div class="container philosophy-inner reveal">
         <p class="eyebrow">Η Φιλοσοφία μας</p>
         <span class="philosophy-mark" aria-hidden="true">&ldquo;</span>
-        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως — η ομορφιά χτίζεται και από μέσα.</blockquote>
+        <blockquote><em>Elegance is the only beauty that never fades.</em> Είσαι ό,τι τρως. Η ομορφιά χτίζεται και από μέσα.</blockquote>
         <cite class="philosophy-cite">Έλενα Σπυριδάκη · Beauty Lab, Σητεία</cite>
       </div>
     </section>
@@ -599,7 +599,7 @@ function pageServicesHub() {
       <div class="container">
         <p class="eyebrow reveal">Υπηρεσίες</p>
         <h1 class="page-title reveal">Φροντίδα προσώπου, σώματος &amp; διατροφής</h1>
-        <p class="page-lead reveal">Από τον βαθύ καθαρισμό και την αντιγήρανση μέχρι το αδυνάτισμα, την αποτρίχωση laser και το εξατομικευμένο διατροφικό πλάνο — όλα σε έναν χώρο, με κοινό σχεδιασμό.</p>
+        <p class="page-lead reveal">Από τον βαθύ καθαρισμό και την αντιγήρανση μέχρι το αδυνάτισμα, την αποτρίχωση laser και το εξατομικευμένο διατροφικό πλάνο, όλα σε έναν χώρο, με κοινό σχεδιασμό.</p>
       </div>
     </section>
     <section class="services services--hub">
@@ -808,15 +808,15 @@ function pageBlogHub() {
     {
       "@context": "https://schema.org",
       "@type": "Blog",
-      name: BIZ.name + " — Blog",
+      name: BIZ.name + " | Blog",
       url: abs("blog/index.html"),
       inLanguage: "el",
     },
   ];
   return head({
     depth,
-    title: "Blog — Αισθητική, Περιποίηση & Διατροφή | Beauty Lab Σητεία",
-    desc: "Οδηγοί και απαντήσεις για την περιποίηση προσώπου και σώματος, την αποτρίχωση laser και τη διατροφή, από την Έλενα Σπυριδάκη — αισθητικό κοσμητολόγο και διαιτολόγο.",
+    title: "Blog: Αισθητική, Περιποίηση & Διατροφή | Beauty Lab Σητεία",
+    desc: "Οδηγοί και απαντήσεις για την περιποίηση προσώπου και σώματος, την αποτρίχωση laser και τη διατροφή, από την Έλενα Σπυριδάκη, αισθητικό κοσμητολόγο και διαιτολόγο.",
     canonical: "blog/index.html",
     keywords: "blog αισθητικής, περιποίηση προσώπου, συμβουλές δέρματος, διατροφή και ομορφιά, αποτρίχωση laser συμβουλές",
     ld,
@@ -829,7 +829,7 @@ function pageBlogHub() {
       <div class="container">
         <p class="eyebrow reveal">Blog</p>
         <h1 class="page-title reveal">Ενημέρωση για την ομορφιά σου</h1>
-        <p class="page-lead reveal">Χρήσιμοι οδηγοί και ειλικρινείς απαντήσεις σε όσα ρωτάτε πιο συχνά — από την Έλενα Σπυριδάκη.</p>
+        <p class="page-lead reveal">Χρήσιμοι οδηγοί και ειλικρινείς απαντήσεις σε όσα ρωτάτε πιο συχνά, από την Έλενα Σπυριδάκη.</p>
       </div>
     </section>
     <section class="posts">
@@ -948,7 +948,7 @@ function pageContact() {
   const ld = [breadcrumbLD(depth, trail), { "@context": "https://schema.org", ...studioLD }];
   return head({
     depth,
-    title: "Επικοινωνία & Ραντεβού | Beauty Lab by Elena Spyridaki — Σητεία",
+    title: "Επικοινωνία & Ραντεβού | Beauty Lab by Elena Spyridaki, Σητεία",
     desc: `Επικοινωνήστε με το Beauty Lab. ${BIZ.street}, ${BIZ.area} ${BIZ.postal}, Λασίθι. Τηλ. ${BIZ.phoneDisplay}, ${BIZ.email}. Λειτουργία κατόπιν ραντεβού.`,
     canonical: "epikoinonia.html",
     keywords: "επικοινωνία αισθητικός Σητεία, ραντεβού ινστιτούτο αισθητικής Σητεία, τηλέφωνο Beauty Lab, Καταπότη 36 Σητεία",
@@ -963,7 +963,7 @@ function pageContact() {
         <div class="contact-copy">
           <p class="eyebrow reveal">Επικοινωνία</p>
           <h1 class="section-title reveal">Κλείστε το ραντεβού σας</h1>
-          <p class="contact-note reveal">Το ινστιτούτο λειτουργεί <strong>κατόπιν ραντεβού</strong>. Μπορείτε να κλείσετε <a href="${r("ratevou.html")}"><strong>online σε ένα λεπτό</strong></a> — ή να μας πάρετε τηλέφωνο, ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε.</p>
+          <p class="contact-note reveal">Το ινστιτούτο λειτουργεί <strong>κατόπιν ραντεβού</strong>. Μπορείτε να κλείσετε <a href="${r("ratevou.html")}"><strong>online σε ένα λεπτό</strong></a> ή να μας πάρετε τηλέφωνο, ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε.</p>
           <ul class="contact-list">
             <li class="reveal"><span class="contact-label">Ωράριο</span><span class="contact-value">Δευτέρα &amp; Τετάρτη: 16:00 – 21:30<br />Τρίτη, Πέμπτη &amp; Παρασκευή: 09:15 – 17:30<br /><em>κατόπιν ραντεβού</em></span></li>
             <li class="reveal"><span class="contact-label">Διεύθυνση</span><span class="contact-value">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />${esc(BIZ.region)}, Τ.Κ. ${esc(BIZ.postal)}</span></li>
@@ -977,7 +977,7 @@ function pageContact() {
           </div>
         </div>
         <div class="contact-map reveal">
-          <iframe title="Χάρτης — ${attr(BIZ.street + ", " + BIZ.area)}" src="https://www.google.com/maps?q=${encodeURIComponent(BIZ.street + ", " + BIZ.area + " " + BIZ.postal)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          <iframe title="Χάρτης: ${attr(BIZ.street + ", " + BIZ.area)}" src="https://www.google.com/maps?q=${encodeURIComponent(BIZ.street + ", " + BIZ.area + " " + BIZ.postal)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
         </div>
       </div>
     </section>
@@ -1000,7 +1000,7 @@ function pageOffers() {
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "Προσφορές — Beauty Lab by Elena Spyridaki",
+      name: "Προσφορές | Beauty Lab by Elena Spyridaki",
       itemListElement: OFFERS.map((o, i) => ({
         "@type": "ListItem",
         position: i + 1,
@@ -1013,6 +1013,9 @@ function pageOffers() {
   const blocks = OFFERS.map(
     (o) => `
       <article class="offer-full reveal" id="${o.slug}">
+        <span class="offer-beam" aria-hidden="true"></span>
+        <span class="offer-scan" aria-hidden="true"></span>
+        <div class="offer-shell">
         <div class="offer-full-head">
           <span class="offer-icon" aria-hidden="true">${o.icon}</span>
           <div>
@@ -1029,7 +1032,7 @@ function pageOffers() {
             <ul class="ticks">
               ${o.includes.map((x) => `<li>${esc(x)}</li>`).join("\n              ")}
             </ul>
-            ${o.price ? `<p class="offer-full-price">${esc(o.price)}</p>` : `<p class="offer-full-ask">Τηλεφωνήστε μας για την τιμή — εξαρτάται από τις περιοχές και τον αριθμό συνεδριών.</p>`}
+            ${o.price ? `<p class="offer-full-price">${esc(o.price)}</p>` : `<p class="offer-full-ask">Τηλεφωνήστε μας για την τιμή. Εξαρτάται από τις περιοχές και τον αριθμό συνεδριών.</p>`}
             ${o.validity ? `<p class="offer-full-valid">${esc(o.validity)}</p>` : ""}
             <div class="offer-full-actions">
               <a href="${r("ratevou.html")}" class="btn btn-primary btn-block">Κλείστε Ραντεβού</a>
@@ -1037,12 +1040,14 @@ function pageOffers() {
             </div>
           </div>
         </div>
+        </div>
       </article>`
   ).join("");
 
   return head({
     depth,
-    title: "Προσφορές & Πακέτα | Beauty Lab by Elena Spyridaki — Σητεία",
+    bodyClass: "page-offers",
+    title: "Προσφορές & Πακέτα | Beauty Lab by Elena Spyridaki, Σητεία",
     desc: "Οι τρέχουσες προσφορές και τα πακέτα του Beauty Lab στη Σητεία: laser σώματος, καθαρισμός & ενυδάτωση προσώπου, πρόγραμμα σώματος με διατροφή, ετοιμασία για γάμο.",
     canonical: "prosfores.html",
     keywords: "προσφορές αισθητικής Σητεία, πακέτα laser Σητεία, προσφορά καθαρισμός προσώπου, πακέτο αδυνατίσματος Λασίθι, Beauty Lab προσφορές",
@@ -1056,7 +1061,7 @@ function pageOffers() {
       <div class="container">
         <p class="eyebrow reveal">Οι προσφορές μας</p>
         <h1 class="page-title reveal">Προσφορές &amp; πακέτα</h1>
-        <p class="page-lead reveal">Θεραπείες που η μία στηρίζει την άλλη, σε πακέτο με σταθερή τιμή. Ρωτήστε μας τι ταιριάζει στη δική σας περίπτωση — δεν χρειάζεστε πάντα το μεγαλύτερο πακέτο.</p>
+        <p class="page-lead reveal">Θεραπείες που η μία στηρίζει την άλλη, σε πακέτο με σταθερή τιμή. Ρωτήστε μας τι ταιριάζει στη δική σας περίπτωση. Δεν χρειάζεστε πάντα το μεγαλύτερο πακέτο.</p>
       </div>
     </section>
 
@@ -1099,8 +1104,8 @@ function pageBooking() {
 
   return head({
     depth,
-    title: "Ραντεβού Online — Beauty Lab by Elena Spyridaki, Σητεία",
-    desc: "Κλείστε online το ραντεβού σας στο Beauty Lab στη Σητεία. Επιλέξτε θεραπεία, ημέρα και ώρα — βλέπετε αμέσως τις πραγματικά διαθέσιμες ώρες.",
+    title: "Ραντεβού Online | Beauty Lab by Elena Spyridaki, Σητεία",
+    desc: "Κλείστε online το ραντεβού σας στο Beauty Lab στη Σητεία. Επιλέξτε θεραπεία, ημέρα και ώρα. Βλέπετε αμέσως τις πραγματικά διαθέσιμες ώρες.",
     canonical: "ratevou.html",
     keywords: "ραντεβού online αισθητικός Σητεία, κλείσιμο ραντεβού Beauty Lab, ραντεβού laser Σητεία, ινστιτούτο αισθητικής Σητεία",
     ld,
@@ -1113,7 +1118,7 @@ function pageBooking() {
       <div class="container">
         <p class="eyebrow reveal">Ραντεβού Online</p>
         <h1 class="page-title reveal">Κλείστε το ραντεβού σας</h1>
-        <p class="page-lead reveal">Διαλέξτε θεραπεία, ημέρα και ώρα. Οι ώρες που βλέπετε είναι οι πραγματικά ελεύθερες — ενημερώνονται απευθείας από το ημερολόγιο του ινστιτούτου.</p>
+        <p class="page-lead reveal">Διαλέξτε θεραπεία, ημέρα και ώρα. Οι ώρες που βλέπετε είναι οι πραγματικά ελεύθερες και ενημερώνονται απευθείας από το ημερολόγιο του ινστιτούτου.</p>
       </div>
     </section>
 
@@ -1134,7 +1139,7 @@ function pageBooking() {
         <aside class="bk-aside">
           <div class="bk-card reveal">
             <h2>Προτιμάτε τηλέφωνο;</h2>
-            <p>Ευχαρίστως — ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε ή θέλετε να συνδυάσετε περισσότερες από μία.</p>
+            <p>Ευχαρίστως, ιδίως αν δεν είστε σίγουρη ποια θεραπεία χρειάζεστε ή θέλετε να συνδυάσετε περισσότερες από μία.</p>
             <a href="tel:${BIZ.phoneIntl}" class="btn btn-primary">${esc(BIZ.phoneDisplay)}</a>
           </div>
           <div class="bk-card reveal">
@@ -1147,8 +1152,9 @@ function pageBooking() {
             <h2>Καλό είναι να ξέρετε</h2>
             <ul class="bk-list">
               <li>Τα online ραντεβού κλείνονται τουλάχιστον <strong>3 ώρες</strong> νωρίτερα.</li>
-              <li>Για <strong>laser σε πόδια ή μπικίνι</strong>, αν δεν έχετε ξυριστεί, η θεραπεία θέλει 15 λεπτά παραπάνω — θα σας ρωτήσουμε.</li>
-              <li>Για αλλαγή ή ακύρωση, τηλεφωνήστε μας.</li>
+              <li>Για <strong>laser σε πόδια ή μπικίνι</strong>, αν δεν έχετε ξυριστεί, η θεραπεία θέλει 15 λεπτά παραπάνω και θα σας ρωτήσουμε.</li>
+              <li>Για αλλαγή ή ακύρωση, ένα τηλεφώνημα <strong>μία ημέρα νωρίτερα</strong> είναι αρκετό, ώστε να προλάβει να δοθεί η ώρα σε κάποια άλλη κυρία.</li>
+              <li>Σε ακύρωση της τελευταίας στιγμής, <strong>μία ώρα πριν ή λιγότερο</strong>, η ώρα δύσκολα καλύπτεται. Σε αυτή την περίπτωση προστίθεται μια μικρή συμβολική χρέωση στο επόμενο ραντεβού σας. Ευχαριστούμε για την κατανόηση.</li>
             </ul>
           </div>
         </aside>
@@ -1200,7 +1206,7 @@ function pageBooking() {
       stepsEl.hidden = n > 3;
     }
 
-    // Το βελάκι επιστροφής — μπαίνει πάνω-πάνω σε κάθε οθόνη μετά την πρώτη.
+    // Το βελάκι επιστροφής μπαίνει πάνω-πάνω σε κάθε οθόνη μετά την πρώτη.
     function backBtn(label) {
       return '<button type="button" class="bk-back" id="bkBack">' +
              '<span class="bk-back-i" aria-hidden="true">←</span>' +
@@ -1316,7 +1322,7 @@ function pageBooking() {
         '<button type="button" class="bk-opt" data-prep="0"><strong>Όχι ακόμη</strong>' +
         '<span>' + (s.minutes + s.prepExtra) + " λεπτά</span></button>" +
         '</div>' +
-        '<p class="bk-fine">Το ξύρισμα γίνεται στο ινστιτούτο αν χρειαστεί — απλώς θέλει λίγο παραπάνω χρόνο, γι\\'  αυτό το κρατάμε στο ραντεβού.</p>';
+        '<p class="bk-fine">Το ξύρισμα γίνεται στο ινστιτούτο αν χρειαστεί, απλώς θέλει λίγο παραπάνω χρόνο, γι\\'  αυτό το κρατάμε στο ραντεβού.</p>';
 
       stage.querySelector('#bkBack').addEventListener('click', renderServices);
       var opts = stage.querySelectorAll('.bk-opt');
@@ -1575,7 +1581,7 @@ function pageBooking() {
       });
     }
 
-    // Κλικ πάνω στα ολοκληρωμένα βήματα της μπάρας — δεύτερος τρόπος επιστροφής.
+    // Κλικ πάνω στα ολοκληρωμένα βήματα της μπάρας, δεύτερος τρόπος επιστροφής.
     var navs = stepsEl.querySelectorAll('button[data-goto]');
     for (var n = 0; n < navs.length; n++) {
       navs[n].addEventListener('click', function () {

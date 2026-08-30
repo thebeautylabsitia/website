@@ -56,6 +56,22 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  // Προσφορές: το φως ακολουθεί τον κέρσορα μέσα στην κάρτα
+  var lightCards = document.querySelectorAll(".page-offers .offer-full");
+  if (
+    lightCards.length &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    lightCards.forEach(function (card) {
+      card.addEventListener("pointermove", function (e) {
+        var r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", (((e.clientX - r.left) / r.width) * 100).toFixed(1) + "%");
+        card.style.setProperty("--my", (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%");
+      });
+    });
+  }
+
   // Reveal on scroll
   var revealEls = document.querySelectorAll(".reveal");
   // Dev aid / safety: reveal everything at once
