@@ -1256,7 +1256,8 @@ function pageBooking() {
         for (var j = 0; j < g[i].services.length; j++) {
           var s = g[i].services[j];
           h += '<button type="button" class="bk-item" data-code="' + esc(s.code) + '">' +
-               '<span class="bk-item-name">' + esc(s.name) + '</span>' +
+               '<span class="bk-item-name">' + esc(s.name) +
+               '<small class="bk-item-who">' + esc(whoLabel(s.staff)) + '</small></span>' +
                '<span class="bk-item-min">' + s.minutes + " λεπτά</span>" +
                '<span class="bk-item-go" aria-hidden="true">→</span></button>';
         }
@@ -1285,6 +1286,14 @@ function pageBooking() {
       }
     }
 
+    // Ποια αισθητικός κάνει την υπηρεσία. Η σειρά είναι σειρά προτεραιότητας,
+    // οπότε στο laser εμφανίζεται πρώτη η Κατερίνα.
+    function whoLabel(staff) {
+      if (!staff || !staff.length) { return ''; }
+      if (staff.length === 1) { return 'με την ' + staff[0]; }
+      return staff.join(' ή ');
+    }
+
     function findService(code) {
       var g = state.catalog.groups;
       for (var i = 0; i < g.length; i++) {
@@ -1292,7 +1301,8 @@ function pageBooking() {
           if (g[i].services[j].code === code) {
             var s = g[i].services[j];
             return { code: s.code, name: s.name, minutes: s.minutes,
-                     prepExtra: s.prepExtra, group: g[i].name };
+                     prepExtra: s.prepExtra, group: g[i].name,
+                     staff: s.staff || [] };
           }
         }
       }
@@ -1454,9 +1464,13 @@ function pageBooking() {
       var parts = state.day.split('-');
       var h = '<h3 class="bk-slots-title">' + DOW[dowMon(+parts[0], +parts[1], +parts[2])] +
         ' ' + (+parts[2]) + ' ' + MONTHS[+parts[1] - 1] + '</h3><div class="bk-times">';
+      var showWho = (state.service.staff || []).length > 1;
       for (var i = 0; i < info.slots.length; i++) {
+        var sl = info.slots[i];
         h += '<button type="button" class="bk-time" data-i="' + i + '">' +
-             esc(info.slots[i].label) + '</button>';
+             esc(sl.label) +
+             (showWho && sl.staffName ? '<small>' + esc(sl.staffName) + '</small>' : '') +
+             '</button>';
       }
       h += '</div>';
       el.innerHTML = h;
@@ -1494,11 +1508,11 @@ function pageBooking() {
         '<form class="bk-form" id="bkForm" novalidate>' +
         '<label>Ονοματεπώνυμο<input type="text" name="name" required autocomplete="name" /></label>' +
         '<label>Κινητό τηλέφωνο<input type="tel" name="phone" required autocomplete="tel" inputmode="tel" placeholder="69…" /></label>' +
-        '<label>Email <span class="bk-opt-tag">προαιρετικό</span><input type="email" name="email" autocomplete="email" /></label>' +
+        '<label>Email<input type="email" name="email" required autocomplete="email" /></label>' +
         '<label>Σημείωση <span class="bk-opt-tag">προαιρετικό</span><textarea name="notes" rows="3"></textarea></label>' +
         '<p class="bk-err" id="bkErr" hidden></p>' +
         '<button type="submit" class="btn btn-primary bk-submit">Επιβεβαίωση ραντεβού</button>' +
-        '<p class="bk-fine">Θα σας στείλουμε υπενθύμιση με SMS την προηγούμενη ημέρα.</p>' +
+        '<p class="bk-fine">Στο email σας στέλνουμε την επιβεβαίωση και την υπενθύμιση της προηγούμενης ημέρας.</p>' +
         '</form>';
 
       stage.querySelector('#bkBack').addEventListener('click', backToCalendar);
@@ -1517,6 +1531,7 @@ function pageBooking() {
       };
       var name = val('name');
       var phone = val('phone');
+      var email = val('email');
 
       function showErr(m) {
         errEl.textContent = m; errEl.hidden = false;
@@ -1525,6 +1540,10 @@ function pageBooking() {
       errEl.hidden = true;
       if (name.length < 3) { showErr('Συμπληρώστε το ονοματεπώνυμό σας.'); return; }
       if (phone.replace(/[^0-9]/g, '').length < 10) { showErr('Συμπληρώστε ένα έγκυρο τηλέφωνο.'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        showErr('Συμπληρώστε το email σας, εκεί στέλνουμε την επιβεβαίωση και την υπενθύμιση.');
+        return;
+      }
 
       btn.disabled = true;
       btn.textContent = 'Καταχώρηση…';
@@ -1540,7 +1559,7 @@ function pageBooking() {
           staff: state.slot.staff,
           name: name,
           phone: phone,
-          email: val('email'),
+          email: email,
           notes: val('notes')
         })
       })
@@ -1568,8 +1587,10 @@ function pageBooking() {
         '<h2 class="bk-title">Το ραντεβού σας κλείστηκε</h2>' +
         '<p class="bk-done-when">' + esc(res.startLabel) + '</p>' +
         '<p>' + esc(res.service.name) + ' · ' + res.durationMinutes + ' λεπτά · με την ' + esc(res.staffName) + '</p>' +
-        '<p class="bk-fine">Καταπότη 36, Σητεία. Θα λάβετε υπενθύμιση με SMS την προηγούμενη ημέρα.' +
-        (res.client && res.client.email ? ' Στείλαμε και email επιβεβαίωσης.' : '') + '</p>' +
+        '<p class="bk-fine">Καταπότη 36, Σητεία.' +
+        (res.client && res.client.email
+          ? ' Στείλαμε email επιβεβαίωσης και θα λάβετε υπενθύμιση την προηγούμενη ημέρα.'
+          : '') + '</p>' +
         '<div class="bk-done-actions">' +
         '<a href="${r("index.html")}" class="btn btn-ghost">Επιστροφή στην αρχική</a>' +
         '<button type="button" class="btn btn-ghost" id="bkAgain">Νέο ραντεβού</button>' +

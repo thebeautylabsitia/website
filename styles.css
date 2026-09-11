@@ -1484,6 +1484,14 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
 .bk-item:hover { background: var(--blush); }
 .bk-item-name { flex: 1; font-size: 0.98rem; }
 .bk-item-min { font-size: 0.84rem; color: var(--ink-soft); white-space: nowrap; }
+/* Ποια αισθητικός κάνει την υπηρεσία, κάτω από το όνομά της */
+.bk-item-who {
+  display: block;
+  margin-top: 0.12rem;
+  font-size: 0.76rem;
+  color: var(--mocha);
+  letter-spacing: 0.02em;
+}
 .bk-item-go {
   color: var(--rose-deep);
   opacity: 0;
@@ -1601,6 +1609,15 @@ a.svc:hover .svc-more { color: var(--rose); transform: translateX(4px); }
   margin: 0 0 0.8rem;
 }
 .bk-times { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+/* Όταν την υπηρεσία την κάνουν και οι δύο, η ώρα λέει και ποια είναι ελεύθερη */
+.bk-time small {
+  display: block;
+  margin-top: 0.08rem;
+  font-size: 0.72rem;
+  line-height: 1.1;
+  color: var(--ink-soft);
+}
+.bk-time:hover small { color: var(--mocha); }
 .bk-time {
   border: 1px solid var(--line);
   background: var(--cream);
