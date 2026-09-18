@@ -1540,7 +1540,7 @@ function pageBooking() {
       errEl.hidden = true;
       if (name.length < 3) { showErr('Συμπληρώστε το ονοματεπώνυμό σας.'); return; }
       if (phone.replace(/[^0-9]/g, '').length < 10) { showErr('Συμπληρώστε ένα έγκυρο τηλέφωνο.'); return; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) {
         showErr('Συμπληρώστε το email σας, εκεί στέλνουμε την επιβεβαίωση και την υπενθύμιση.');
         return;
       }
