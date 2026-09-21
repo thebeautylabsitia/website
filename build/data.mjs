@@ -3,8 +3,8 @@
 //  Single source of truth for the static-site generator.
 // ============================================================
 
-// ⚠️ Δεν υπάρχει ακόμη domain — προσωρινό. Αλλάξτε το πριν το live.
-export const BASE = "https://beautylab-sitia.gr";
+// Live domain του ινστιτούτου.
+export const BASE = "https://thebeautylabsitia.gr";
 
 export const BIZ = {
   name: "Beauty Lab",

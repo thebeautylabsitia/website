@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://beautylab-sitia.gr/sitemap.xml
+Sitemap: https://thebeautylabsitia.gr/sitemap.xml
 

@@ -194,7 +194,7 @@ node build/build.mjs
 ## ⚠️ Πριν το live — επιβεβαιώστε/διορθώστε
 
 1. **Domain**: δεν υπάρχει ακόμη. Όλα τα canonical/OG/sitemap URLs χρησιμοποιούν
-   προσωρινά `https://beautylab-sitia.gr`. Αλλάξτε το `BASE` στην κορυφή του
+   προσωρινά `https://thebeautylabsitia.gr`. Αλλάξτε το `BASE` στην κορυφή του
    `build/data.mjs` και τρέξτε ξανά τη γεννήτρια.
 2. **Email**: χρησιμοποιείται το προσωπικό `elena.spiridaki@gmail.com`. Μόλις
    υπάρχει domain, προτείνεται επαγγελματικό (π.χ. `info@…`) — αλλαγή στο `BIZ.email`.
