@@ -79,8 +79,9 @@ const studioLD = {
   hasMap: `https://www.google.com/maps?q=${encodeURIComponent(BIZ.street + ", " + BIZ.area + " " + BIZ.postal)}`,
   areaServed: ["Σητεία", "Παλαίκαστρο", "Ζάκρος", "Μακρύς Γιαλός", "Ιεράπετρα", "Άγιος Νικόλαος", "Λασίθι", "Κρήτη"],
   openingHoursSpecification: [
-    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Wednesday"], opens: "16:00", closes: "21:30" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Thursday", "Friday"], opens: "09:15", closes: "17:30" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday"], opens: "15:00", closes: "21:30" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Wednesday"], opens: "15:00", closes: "21:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Thursday", "Friday"], opens: "09:00", closes: "17:30" },
   ],
   sameAs: [BIZ.instagram, BIZ.facebook],
   founder: {

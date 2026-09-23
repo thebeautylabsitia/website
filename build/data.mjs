@@ -26,8 +26,8 @@ export const BIZ = {
   // Προσεγγιστικές συντεταγμένες κέντρου Σητείας — επιβεβαιώστε το ακριβές pin.
   lat: 35.2072,
   lng: 26.1039,
-  hoursShort: "Δευ &amp; Τετ 16:00–21:30 · Τρί, Πέμ &amp; Παρ 09:15–17:30",
-  hours: "Δευτέρα & Τετάρτη 16:00–21:30 · Τρίτη, Πέμπτη & Παρασκευή 09:15–17:30",
+  hoursShort: "Δευ 15:00–21:30 · Τετ 15:00–21:00 · Τρί, Πέμ &amp; Παρ 09:00–17:30",
+  hours: "Δευτέρα 15:00–21:30 · Τετάρτη 15:00–21:00 · Τρίτη, Πέμπτη & Παρασκευή 09:00–17:30",
   instagram: "https://www.instagram.com/elena_spiridaki_beauty_lab/",
   facebook: "https://www.facebook.com/thebeautylab",
   social: "@elena_spiridaki_beauty_lab",
